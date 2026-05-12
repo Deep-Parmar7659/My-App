@@ -2,6 +2,8 @@ import DashboardCard from "./DashboardCard";
 
 import useDashboardStats from "../hooks/useDashboardStats";
 
+import { FaUsers, FaFileAlt, FaChartLine } from "react-icons/fa";
+
 export default function DashboardCards() {
   const { stats, loading, error } = useDashboardStats();
 
@@ -19,23 +21,38 @@ export default function DashboardCards() {
   const cards = [
     {
       id: 1,
+
       title: "Total Users",
+
       value: stats.users,
+
       color: "bg-blue-500",
+
+      icon: <FaUsers />,
     },
 
     {
       id: 2,
+
       title: "Total Posts",
+
       value: stats.posts,
+
       color: "bg-green-500",
+
+      icon: <FaFileAlt />,
     },
 
     {
       id: 3,
+
       title: "Analytics",
+
       value: "89%",
+
       color: "bg-purple-500",
+
+      icon: <FaChartLine />,
     },
   ];
 
@@ -46,6 +63,7 @@ export default function DashboardCards() {
         grid-cols-1
         md:grid-cols-2
         lg:grid-cols-3
+
         gap-6
       "
     >
@@ -55,6 +73,7 @@ export default function DashboardCards() {
           title={card.title}
           value={card.value}
           color={card.color}
+          icon={card.icon}
         />
       ))}
     </div>
