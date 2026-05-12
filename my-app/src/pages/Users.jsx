@@ -2,12 +2,15 @@ import { useState, useMemo, useEffect } from "react";
 import useFetchUsers from "../hooks/useFetchUsers";
 import AddUserModal from "../components/AddUserModal";
 import toast from "react-hot-toast";
+import UserTable from "../components/UserTable";
+
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
 
   // Local Added Users State with localStorage
   const [addedUsers, setAddedUsers] = useState(() => {
     const savedUsers = localStorage.getItem("addedUsers");
+
     return savedUsers ? JSON.parse(savedUsers) : [];
   });
 
@@ -25,10 +28,14 @@ export default function Users() {
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [editingUser, setEditingUser] = useState(null);
 
   // Search State
   const [search, setSearch] = useState("");
+
+  // Sorting State
+  const [sortOrder, setSortOrder] = useState("asc");
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,26 +57,42 @@ export default function Users() {
     [allUsers, search],
   );
 
-  // Pagination Logic
-  const lastIndex = currentPage * usersPerPage;
-  const firstIndex = lastIndex - usersPerPage;
-  const currentUsers = filteredUsers.slice(firstIndex, lastIndex);
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  // Sort Users
+  const sortedUsers = useMemo(() => {
+    return [...filteredUsers].sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.name.localeCompare(b.name);
+      }
 
-  if (currentPage > totalPages && totalPages > 0) {
-    setCurrentPage(1);
-  }
+      return b.name.localeCompare(a.name);
+    });
+  }, [filteredUsers, sortOrder]);
+
+  // Pagination Logic
+  const totalPages = Math.ceil(sortedUsers.length / usersPerPage);
+
+  // Adjust current page if it exceeds total pages due to filtering/deletion
+  const validatedCurrentPage =
+    currentPage > totalPages && totalPages > 0 ? 1 : currentPage;
+
+  const currentUsers = sortedUsers.slice(
+    (validatedCurrentPage - 1) * usersPerPage,
+    validatedCurrentPage * usersPerPage,
+  );
 
   // Add New User
   const handleAddUser = (newUser) => {
     setAddedUsers((prevUsers) => [newUser, ...prevUsers]);
+
     toast.success("✅ User Added Successfully");
   };
 
   // Delete User
   const handleDeleteUser = (id) => {
     const updatedUsers = addedUsers.filter((user) => user.id !== id);
+
     setAddedUsers(updatedUsers);
+
     toast.success("🗑️ User Deleted Successfully");
   };
 
@@ -85,8 +108,11 @@ export default function Users() {
     const updatedUsers = addedUsers.map((user) =>
       user.id === updatedUser.id ? updatedUser : user,
     );
+
     setAddedUsers(updatedUsers);
+
     setEditingUser(null);
+
     toast.success("✏️ User Updated Successfully");
   };
 
@@ -97,7 +123,6 @@ export default function Users() {
 
   // Error
   if (error) {
-    toast.error("❌ Something went wrong");
     return <p className="text-red-500">{error}</p>;
   }
 
@@ -108,7 +133,8 @@ export default function Users() {
         <h1
           className="
             text-3xl font-bold
-            text-gray-800 dark:text-white
+            text-gray-800
+            dark:text-white
           "
         >
           Users
@@ -128,9 +154,9 @@ export default function Users() {
       {/* Top Actions */}
       <div
         className="
-          flex flex-col md:flex-row
-          md:items-center
-          md:justify-between
+          flex flex-col lg:flex-row
+          lg:items-center
+          lg:justify-between
           gap-4
           mb-6
         "
@@ -153,127 +179,115 @@ export default function Users() {
           + Add User
         </button>
 
-        {/* Search */}
-        <input
-          type="text"
-          placeholder="Search users..."
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="w-full md:w-96 px-4 py-3 rounded-xl border dark:bg-gray-800 dark:text-white"
-        />
-      </div>
+        {/* Right Controls */}
+        <div
+          className="
+            flex flex-col md:flex-row
+            gap-4
+            w-full lg:w-auto
+          "
+        >
+          {/* Search */}
+          <input
+            type="text"
+            placeholder="Search users..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
 
-      {/* Users Grid */}
-      <div
-        className="
-          grid
-          grid-cols-1
-          md:grid-cols-2
-          lg:grid-cols-3
-          gap-6
-        "
-      >
-        {currentUsers.map((user) => (
-          <div
-            key={user.id}
+              setCurrentPage(1);
+            }}
             className="
-              bg-white dark:bg-gray-800
+              w-full md:w-72
 
-              p-6 rounded-2xl
+              px-4 py-3
 
-              shadow-lg
+              rounded-xl border
+
+              dark:bg-gray-800
+              dark:text-white
+            "
+          />
+
+          {/* Sorting */}
+          <select
+            value={sortOrder}
+            onChange={(e) => {
+              setSortOrder(e.target.value);
+
+              setCurrentPage(1);
+            }}
+            className="
+              px-4 py-3
+
+              rounded-xl border
+
+              dark:bg-gray-800
+              dark:text-white
             "
           >
-            {/* User Name */}
-            <h2
-              className="
-                text-xl font-bold
+            <option value="asc">A → Z</option>
 
-                text-gray-800
-                dark:text-white
-              "
-            >
-              {user.name}
-            </h2>
-
-            {/* User Email */}
-            <p
-              className="
-                text-gray-500
-                dark:text-gray-300
-                mt-2
-              "
-            >
-              {user.email}
-            </p>
-
-            {/* Company */}
-            <p
-              className="
-                text-gray-400
-                mt-1
-              "
-            >
-              {user.company.name}
-            </p>
-
-            {/* Action Buttons */}
-            <div
-              className="
-                flex gap-3
-                mt-5
-              "
-            >
-              {/* Edit */}
-              <button
-                onClick={() => handleEditUser(user)}
-                className="
-                  bg-yellow-500
-                  hover:bg-yellow-600
-
-                  text-white
-
-                  px-4 py-2
-                  rounded-lg
-                "
-              >
-                Edit
-              </button>
-
-              {/* Delete */}
-              <button
-                onClick={() => handleDeleteUser(user.id)}
-                className="
-                  bg-red-500
-                  hover:bg-red-600
-
-                  text-white
-
-                  px-4 py-2
-                  rounded-lg
-                "
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
+            <option value="desc">Z → A</option>
+          </select>
+        </div>
       </div>
+
+      {/* Empty State */}
+      {currentUsers.length === 0 ? (
+        <div
+          className="
+            bg-white dark:bg-gray-800
+
+            p-10 rounded-2xl
+
+            shadow-lg
+
+            text-center
+          "
+        >
+          <h2
+            className="
+              text-2xl font-bold
+
+              dark:text-white
+            "
+          >
+            🔍 No Users Found
+          </h2>
+
+          <p
+            className="
+              text-gray-500
+              dark:text-gray-300
+              mt-2
+            "
+          >
+            Try searching another user name.
+          </p>
+        </div>
+      ) : (
+        <UserTable
+          users={currentUsers}
+          onEdit={handleEditUser}
+          onDelete={handleDeleteUser}
+        />
+      )}
 
       {/* Pagination */}
       <div
         className="
-          flex items-center gap-4
+          flex items-center
+          justify-center
+          gap-4
+
           mt-8
         "
       >
         {/* Previous */}
         <button
-          onClick={() => setCurrentPage(currentPage - 1)}
-          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(validatedCurrentPage - 1)}
+          disabled={validatedCurrentPage === 1}
           className="
             bg-blue-600
             text-white
@@ -293,13 +307,13 @@ export default function Users() {
             dark:text-white
           "
         >
-          Page {currentPage} of {totalPages}
+          Page {validatedCurrentPage} of {totalPages}
         </span>
 
         {/* Next */}
         <button
-          onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(validatedCurrentPage + 1)}
+          disabled={validatedCurrentPage === totalPages || totalPages === 0}
           className="
             bg-blue-600
             text-white
@@ -319,6 +333,7 @@ export default function Users() {
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
+
           setEditingUser(null);
         }}
         onAddUser={handleAddUser}
