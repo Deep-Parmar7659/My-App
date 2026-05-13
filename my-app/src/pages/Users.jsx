@@ -3,6 +3,7 @@ import useFetchUsers from "../hooks/useFetchUsers";
 import AddUserModal from "../components/AddUserModal";
 import toast from "react-hot-toast";
 import UserTable from "../components/UserTable";
+import useDebounce from "../hooks/useDebounce";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
@@ -34,6 +35,9 @@ export default function Users() {
   // Search State
   const [search, setSearch] = useState("");
 
+  // debounced Search
+  const debouncedSearch = useDebounce(search, 300);
+
   // Sorting State
   const [sortOrder, setSortOrder] = useState("asc");
 
@@ -49,13 +53,11 @@ export default function Users() {
   );
 
   // Filter Users
-  const filteredUsers = useMemo(
-    () =>
-      allUsers.filter((user) =>
-        user.name.toLowerCase().includes(search.toLowerCase()),
-      ),
-    [allUsers, search],
-  );
+  const filteredUsers = useMemo(() => {
+    return allUsers.filter((user) =>
+      user.name.toLowerCase().includes(debouncedSearch.toLowerCase()),
+    );
+  }, [allUsers, debouncedSearch]);
 
   // Sort Users
   const sortedUsers = useMemo(() => {
