@@ -1,6 +1,6 @@
 // Dashboard logic
 import useFetch from "./useFetch";
-import { getUsers, getPosts } from "../services/api";
+import { getPosts, getUsers } from "../services/api";
 
 const fetchDashboardStats = async () => {
   const [usersData, postsData] = await Promise.all([getUsers(), getPosts()]);
@@ -12,7 +12,12 @@ const fetchDashboardStats = async () => {
 };
 
 export default function useDashboardStats() {
-  const { data: stats, loading, error } = useFetch(fetchDashboardStats);
+  const {
+    data: stats,
+    loading,
+    error,
+    refetch,
+  } = useFetch(fetchDashboardStats);
 
   return {
     stats: stats || {
@@ -21,5 +26,6 @@ export default function useDashboardStats() {
     },
     loading,
     error,
+    refetch,
   };
 }

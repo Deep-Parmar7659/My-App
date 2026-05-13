@@ -6,11 +6,12 @@ import useFetch from "./useFetch";
 import { getUsers } from "../services/api";
 
 export default function useFetchUsers() {
-  const { data: users, loading, error } = useFetch(getUsers);
+  const { data: users, loading, error, refetch } = useFetch(getUsers);
 
   return {
     users: users || [],
     loading,
     error,
+    refetch,
   };
 }
