@@ -1,35 +1,15 @@
 // Custom Hook to fetch users :-
 // Moved all logic OUT of component
 // Now reusable anywhere
-
-import { useEffect, useState } from "react";
+// Users logic
+import useFetch from "./useFetch";
 import { getUsers } from "../services/api";
 
 export default function useFetchUsers() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const data = await getUsers();
-
-        setUsers(data);
-
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
-  }, []);
+  const { data: users, loading, error } = useFetch(getUsers);
 
   return {
-    users,
+    users: users || [],
     loading,
     error,
   };

@@ -1,25 +1,13 @@
-import { useEffect, useState } from "react";
+// Posts logic
+import useFetch from "./useFetch";
 import { getPosts } from "../services/api";
 
 export default function useFetchPosts() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { data: posts, loading, error } = useFetch(getPosts);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const data = await getPosts();
-        setPosts(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, []);
-
-  return { posts, loading, error };
+  return {
+    posts: posts || [],
+    loading,
+    error,
+  };
 }

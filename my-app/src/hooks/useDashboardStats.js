@@ -1,30 +1,24 @@
-import { useEffect, useState } from "react";
+// Dashboard logic
+import useFetch from "./useFetch";
 import { getUsers, getPosts } from "../services/api";
 
-export default function useDashboardStats() {
-  const [stats, setStats] = useState({ users: 0, posts: 0 });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+const fetchDashboardStats = async () => {
+  const [usersData, postsData] = await Promise.all([getUsers(), getPosts()]);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        // Multiple API Calls
-        const [usersData, postsData] = await Promise.all([
-          getUsers(),
-          getPosts(),
-        ]);
-        setStats({ users: usersData.length, posts: postsData.length });
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStats();
-  }, []);
   return {
-    stats,
+    users: usersData.length,
+    posts: postsData.length,
+  };
+};
+
+export default function useDashboardStats() {
+  const { data: stats, loading, error } = useFetch(fetchDashboardStats);
+
+  return {
+    stats: stats || {
+      users: 0,
+      posts: 0,
+    },
     loading,
     error,
   };
