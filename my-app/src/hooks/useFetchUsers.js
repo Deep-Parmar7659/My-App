@@ -14,10 +14,13 @@ export default function useFetchUsers() {
     const fetchUsers = async () => {
       try {
         const data = await getUsers();
+
         setUsers(data);
+
+        setLoading(false);
       } catch (err) {
         setError(err.message);
-      } finally {
+
         setLoading(false);
       }
     };
@@ -25,5 +28,9 @@ export default function useFetchUsers() {
     fetchUsers();
   }, []);
 
-  return { users, loading, error };
+  return {
+    users,
+    loading,
+    error,
+  };
 }

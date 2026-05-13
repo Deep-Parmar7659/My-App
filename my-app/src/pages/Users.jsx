@@ -116,11 +116,6 @@ export default function Users() {
     toast.success("✏️ User Updated Successfully");
   };
 
-  // Loading
-  if (loading) {
-    return <p className="text-white">Loading users...</p>;
-  }
-
   // Error
   if (error) {
     return <p className="text-red-500">{error}</p>;
@@ -269,6 +264,7 @@ export default function Users() {
       ) : (
         <UserTable
           users={currentUsers}
+          loading={loading}
           onEdit={handleEditUser}
           onDelete={handleDeleteUser}
         />
