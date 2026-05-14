@@ -9,11 +9,12 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import useSearch from "../hooks/useSearch";
 import useSort from "../hooks/useSort";
 import useModal from "../hooks/useModal";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
-
   const [addedUsers, setAddedUsers] = useLocalStorage("addedUsers", []);
+  useDocumentTitle("Users");
 
   // Error Toast
   useEffect(() => {

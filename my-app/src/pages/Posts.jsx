@@ -1,7 +1,10 @@
+import useDocumentTitle from "../hooks/useDocumentTitle";
 import useFetchPosts from "../hooks/useFetchPosts";
 
 export default function Posts() {
   const { posts, loading, error } = useFetchPosts();
+
+  useDocumentTitle("Dashboard");
 
   // Loading State
   if (loading) {
