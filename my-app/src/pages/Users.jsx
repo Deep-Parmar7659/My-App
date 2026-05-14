@@ -8,6 +8,7 @@ import Pagination from "../components/Pagination";
 import useLocalStorage from "../hooks/useLocalStorage";
 import useSearch from "../hooks/useSearch";
 import useSort from "../hooks/useSort";
+import useModal from "../hooks/useModal";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
@@ -21,8 +22,7 @@ export default function Users() {
     }
   }, [error]);
 
-  // Modal State
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isOpen, openModal, closeModal } = useModal();
 
   const [editingUser, setEditingUser] = useState(null);
 
@@ -59,7 +59,7 @@ export default function Users() {
   const handleEditUser = (user) => {
     setEditingUser(user);
 
-    setIsModalOpen(true);
+    openModal();
   };
 
   // Update User
@@ -117,7 +117,7 @@ export default function Users() {
       >
         {/* Add User Button */}
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={openModal}
           className="
             bg-blue-600
             hover:bg-blue-700
@@ -224,9 +224,9 @@ export default function Users() {
 
       {/* Add User Modal */}
       <AddUserModal
-        isOpen={isModalOpen}
+        isOpen={isOpen}
         onClose={() => {
-          setIsModalOpen(false);
+          closeModal();
 
           setEditingUser(null);
         }}
