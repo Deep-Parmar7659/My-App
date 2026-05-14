@@ -1,4 +1,8 @@
+import useCopyToClipboard from "../hooks/useCopyToClipboard";
+
 export default function UserTable({ users, onEdit, onDelete, loading }) {
+  const { copied, copy } = useCopyToClipboard();
+
   if (loading && (!users || users.length === 0)) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -76,6 +80,12 @@ export default function UserTable({ users, onEdit, onDelete, loading }) {
                     className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
                   >
                     Delete
+                  </button>
+                  <button
+                    onClick={() => copy(user.email)}
+                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg"
+                  >
+                    {copied ? "Copied" : "Copy"}
                   </button>
                 </div>
               </td>
