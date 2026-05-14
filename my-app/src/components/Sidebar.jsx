@@ -10,9 +10,9 @@ import {
 } from "react-icons/fa";
 
 export default function Sidebar({ isOpen, toggleSidebar }) {
-  const sidebarRef = useRef(null);
+  const sidebarRef = useRef();
   useOutsideClick(sidebarRef, () => {
-    if (isOpen) {
+    if (window.innerWidth < 1024) {
       toggleSidebar();
     }
   });

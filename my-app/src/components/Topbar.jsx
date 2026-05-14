@@ -37,23 +37,23 @@ export default function Topbar({ toggleSidebar }) {
           Admin Dashboard
         </h1>
       </div>
-      <p className="text-sm text-gray-500 dark:text-gray-300">
-        Screen Width: {width}
-      </p>
       {/* Right */}
       <div className="flex items-center gap-4">
         <button
           onClick={toggleTheme}
           className="
-             bg-gray-200
-             dark:bg-gray-700
-              px-4 py-2
-              rounded-lg
-             dark:text-white
+          bg-gray-200
+          dark:bg-gray-700
+          px-4 py-2
+          rounded-lg
+          dark:text-white
           "
         >
           {isDark ? "☀️ Light" : "🌙 Dark"}
         </button>
+        <p className="text-sm text-gray-500 dark:text-gray-300">
+          Screen Width: {width}
+        </p>
 
         {/* Profile */}
         <img
