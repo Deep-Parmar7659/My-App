@@ -66,8 +66,14 @@ export default function Users() {
   }, [filteredUsers, sortOrder]);
 
   // Pagination Hook
-  const { currentPage, setCurrentPage, totalPages, currentData } =
-    usePagination(sortedUsers, 4);
+  const {
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    currentData,
+    nextPage,
+    prevPage,
+  } = usePagination(sortedUsers, 4);
 
   // Add New User
   const handleAddUser = (newUser) => {
@@ -258,7 +264,7 @@ export default function Users() {
       >
         {/* Previous */}
         <button
-          onClick={() => setCurrentPage(currentPage - 1)}
+          onClick={prevPage}
           disabled={currentPage === 1}
           className="
             bg-blue-600
@@ -278,7 +284,7 @@ export default function Users() {
 
         {/* Next */}
         <button
-          onClick={() => setCurrentPage(currentPage + 1)}
+          onClick={nextPage}
           disabled={currentPage === totalPages || totalPages === 0}
           className="
             bg-blue-600

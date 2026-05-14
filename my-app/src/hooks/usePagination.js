@@ -12,10 +12,26 @@ export default function usePagination(data, itemsPerPage = 5) {
     currentPage * itemsPerPage,
   );
 
+  // Next Page
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // Previous Page
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return {
     currentPage,
     setCurrentPage,
     totalPages,
     currentData,
+    nextPage,
+    prevPage,
   };
 }
