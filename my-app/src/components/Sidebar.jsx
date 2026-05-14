@@ -8,7 +8,7 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
-export default function Sidebar({ isOpen, setIsOpen }) {
+export default function Sidebar({ isOpen, toggleSidebar }) {
   // Sidebar Menu Items
   const menuItems = [
     {
@@ -44,7 +44,9 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
   // Close Mobile Sidebar
   const closeSidebar = () => {
-    setIsOpen(false);
+    if (window.innerWidth < 1024) {
+      toggleSidebar();
+    }
   };
 
   return (
