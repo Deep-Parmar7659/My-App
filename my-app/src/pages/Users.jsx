@@ -66,14 +66,8 @@ export default function Users() {
   }, [filteredUsers, sortOrder]);
 
   // Pagination Hook
-  const {
-    currentPage,
-    setCurrentPage,
-    totalPages,
-    currentData,
-    nextPage,
-    prevPage,
-  } = usePagination(sortedUsers, 4);
+  const { currentPage, totalPages, currentData, nextPage, prevPage } =
+    usePagination(sortedUsers, 4);
 
   // Add New User
   const handleAddUser = (newUser) => {
@@ -181,8 +175,6 @@ export default function Users() {
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
-
-              setCurrentPage(1);
             }}
             className="
               w-full md:w-72
@@ -198,8 +190,6 @@ export default function Users() {
             value={sortOrder}
             onChange={(e) => {
               setSortOrder(e.target.value);
-
-              setCurrentPage(1);
             }}
             className="
               px-4 py-3

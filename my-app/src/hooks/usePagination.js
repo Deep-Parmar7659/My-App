@@ -6,28 +6,32 @@ export default function usePagination(data, itemsPerPage = 5) {
   // Total Pages
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
+  // Validate Current Page
+  const safeCurrentPage =
+    currentPage > totalPages && totalPages > 0 ? 1 : currentPage;
+
   // Current Data
   const currentData = data.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
+    (safeCurrentPage - 1) * itemsPerPage,
+    safeCurrentPage * itemsPerPage,
   );
 
   // Next Page
   const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+    if (safeCurrentPage < totalPages) {
+      setCurrentPage(safeCurrentPage + 1);
     }
   };
 
   // Previous Page
   const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+    if (safeCurrentPage > 1) {
+      setCurrentPage(safeCurrentPage - 1);
     }
   };
 
   return {
-    currentPage,
+    currentPage: safeCurrentPage,
     setCurrentPage,
     totalPages,
     currentData,
