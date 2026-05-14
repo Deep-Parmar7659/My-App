@@ -3,10 +3,10 @@ import useFetchUsers from "../hooks/useFetchUsers";
 import AddUserModal from "../components/AddUserModal";
 import toast from "react-hot-toast";
 import UserTable from "../components/UserTable";
-import useDebounce from "../hooks/useDebounce";
 import usePagination from "../hooks/usePagination";
 import Pagination from "../components/Pagination";
 import useLocalStorage from "../hooks/useLocalStorage";
+import useSearch from "../hooks/useSearch";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
@@ -25,12 +25,6 @@ export default function Users() {
 
   const [editingUser, setEditingUser] = useState(null);
 
-  // Search State
-  const [search, setSearch] = useState("");
-
-  // Debounced Search
-  const debouncedSearch = useDebounce(search, 300);
-
   // Sorting State
   const [sortOrder, setSortOrder] = useState("asc");
 
@@ -39,23 +33,18 @@ export default function Users() {
     return [...addedUsers, ...users];
   }, [addedUsers, users]);
 
-  // Filter Users
-  const filteredUsers = useMemo(() => {
-    return allUsers.filter((user) =>
-      user.name.toLowerCase().includes(debouncedSearch.toLowerCase()),
-    );
-  }, [allUsers, debouncedSearch]);
+  const { search, setSearch, filteredData } = useSearch(allUsers, "name");
 
   // Sort Users
   const sortedUsers = useMemo(() => {
-    return [...filteredUsers].sort((a, b) => {
+    return [...filteredData].sort((a, b) => {
       if (sortOrder === "asc") {
         return a.name.localeCompare(b.name);
       }
 
       return b.name.localeCompare(a.name);
     });
-  }, [filteredUsers, sortOrder]);
+  }, [filteredData, sortOrder]);
 
   // Pagination Hook
   const { currentPage, totalPages, currentData, nextPage, prevPage, goToPage } =
