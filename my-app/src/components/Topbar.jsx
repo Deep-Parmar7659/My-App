@@ -1,6 +1,8 @@
-import ThemeToggle from "./ThemeToggle";
+import useTheme from "../hooks/useTheme";
 
 export default function Topbar({ toggleSidebar }) {
+  const { isDark, toggleTheme } = useTheme();
+
   return (
     <header
       className="
@@ -36,8 +38,18 @@ export default function Topbar({ toggleSidebar }) {
 
       {/* Right */}
       <div className="flex items-center gap-4">
-        {/* Theme Toggle */}
-        <ThemeToggle />
+        <button
+          onClick={toggleTheme}
+          className="
+             bg-gray-200
+             dark:bg-gray-700
+              px-4 py-2
+              rounded-lg
+             dark:text-white
+          "
+        >
+          {isDark ? "☀️ Light" : "🌙 Dark"}
+        </button>
 
         {/* Profile */}
         <img
