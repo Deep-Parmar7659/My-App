@@ -66,23 +66,8 @@ export default function Users() {
   }, [filteredUsers, sortOrder]);
 
   // Pagination Hook
-  const { currentPage, setCurrentPage } = usePagination(sortedUsers, 4);
-
-  // Users Per Page
-  const usersPerPage = 4;
-
-  // Pagination Logic
-  const totalPages = Math.ceil(sortedUsers.length / usersPerPage);
-
-  // Validate Current Page
-  const validatedCurrentPage =
-    currentPage > totalPages && totalPages > 0 ? 1 : currentPage;
-
-  // Current Users
-  const currentUsers = sortedUsers.slice(
-    (validatedCurrentPage - 1) * usersPerPage,
-    validatedCurrentPage * usersPerPage,
-  );
+  const { currentPage, setCurrentPage, totalPages, currentData } =
+    usePagination(sortedUsers, 4);
 
   // Add New User
   const handleAddUser = (newUser) => {
@@ -225,7 +210,7 @@ export default function Users() {
       </div>
 
       {/* Empty State */}
-      {currentUsers.length === 0 ? (
+      {currentData.length === 0 ? (
         <div
           className="
             bg-white dark:bg-gray-800
@@ -255,7 +240,7 @@ export default function Users() {
         </div>
       ) : (
         <UserTable
-          users={currentUsers}
+          users={currentData}
           loading={loading}
           onEdit={handleEditUser}
           onDelete={handleDeleteUser}
@@ -273,8 +258,8 @@ export default function Users() {
       >
         {/* Previous */}
         <button
-          onClick={() => setCurrentPage(validatedCurrentPage - 1)}
-          disabled={validatedCurrentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+          disabled={currentPage === 1}
           className="
             bg-blue-600
             text-white
@@ -288,13 +273,13 @@ export default function Users() {
 
         {/* Page Info */}
         <span className="dark:text-white">
-          Page {validatedCurrentPage} of {totalPages}
+          Page {currentPage} of {totalPages}
         </span>
 
         {/* Next */}
         <button
-          onClick={() => setCurrentPage(validatedCurrentPage + 1)}
-          disabled={validatedCurrentPage === totalPages || totalPages === 0}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={currentPage === totalPages || totalPages === 0}
           className="
             bg-blue-600
             text-white
