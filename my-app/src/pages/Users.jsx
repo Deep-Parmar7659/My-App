@@ -4,6 +4,7 @@ import AddUserModal from "../components/AddUserModal";
 import toast from "react-hot-toast";
 import UserTable from "../components/UserTable";
 import useDebounce from "../hooks/useDebounce";
+import usePagination from "../hooks/usePagination";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
@@ -35,22 +36,16 @@ export default function Users() {
   // Search State
   const [search, setSearch] = useState("");
 
-  // debounced Search
+  // Debounced Search
   const debouncedSearch = useDebounce(search, 300);
 
   // Sorting State
   const [sortOrder, setSortOrder] = useState("asc");
 
-  // Pagination State
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const usersPerPage = 4;
-
   // Combine API users and locally added users
-  const allUsers = useMemo(
-    () => [...addedUsers, ...users],
-    [addedUsers, users],
-  );
+  const allUsers = useMemo(() => {
+    return [...addedUsers, ...users];
+  }, [addedUsers, users]);
 
   // Filter Users
   const filteredUsers = useMemo(() => {
@@ -70,13 +65,20 @@ export default function Users() {
     });
   }, [filteredUsers, sortOrder]);
 
+  // Pagination Hook
+  const { currentPage, setCurrentPage } = usePagination(sortedUsers, 4);
+
+  // Users Per Page
+  const usersPerPage = 4;
+
   // Pagination Logic
   const totalPages = Math.ceil(sortedUsers.length / usersPerPage);
 
-  // Adjust current page if it exceeds total pages due to filtering/deletion
+  // Validate Current Page
   const validatedCurrentPage =
     currentPage > totalPages && totalPages > 0 ? 1 : currentPage;
 
+  // Current Users
   const currentUsers = sortedUsers.slice(
     (validatedCurrentPage - 1) * usersPerPage,
     validatedCurrentPage * usersPerPage,
@@ -118,7 +120,7 @@ export default function Users() {
     toast.success("✏️ User Updated Successfully");
   };
 
-  // Error
+  // Error State
   if (error) {
     return <p className="text-red-500">{error}</p>;
   }
@@ -164,12 +166,9 @@ export default function Users() {
           className="
             bg-blue-600
             hover:bg-blue-700
-
             text-white
-
             px-5 py-3
             rounded-xl
-
             transition
           "
         >
@@ -196,11 +195,8 @@ export default function Users() {
             }}
             className="
               w-full md:w-72
-
               px-4 py-3
-
               rounded-xl border
-
               dark:bg-gray-800
               dark:text-white
             "
@@ -216,9 +212,7 @@ export default function Users() {
             }}
             className="
               px-4 py-3
-
               rounded-xl border
-
               dark:bg-gray-800
               dark:text-white
             "
@@ -235,18 +229,14 @@ export default function Users() {
         <div
           className="
             bg-white dark:bg-gray-800
-
             p-10 rounded-2xl
-
             shadow-lg
-
             text-center
           "
         >
           <h2
             className="
               text-2xl font-bold
-
               dark:text-white
             "
           >
@@ -278,7 +268,6 @@ export default function Users() {
           flex items-center
           justify-center
           gap-4
-
           mt-8
         "
       >
@@ -289,10 +278,8 @@ export default function Users() {
           className="
             bg-blue-600
             text-white
-
             px-5 py-2
             rounded-lg
-
             disabled:opacity-50
           "
         >
@@ -300,11 +287,7 @@ export default function Users() {
         </button>
 
         {/* Page Info */}
-        <span
-          className="
-            dark:text-white
-          "
-        >
+        <span className="dark:text-white">
           Page {validatedCurrentPage} of {totalPages}
         </span>
 
@@ -315,10 +298,8 @@ export default function Users() {
           className="
             bg-blue-600
             text-white
-
             px-5 py-2
             rounded-lg
-
             disabled:opacity-50
           "
         >
