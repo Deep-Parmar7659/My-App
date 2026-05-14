@@ -1,15 +1,10 @@
 import { Outlet } from "react-router-dom";
-import { useState } from "react";
-
+import useToggle from "../hooks/useToggle";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 
 export default function DashboardLayout() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+  const [isOpen, toggleSidebar] = useToggle(false);
 
   return (
     <div className="bg-gray-100 dark:bg-gray-800 min-h-screen transition">
@@ -17,12 +12,12 @@ export default function DashboardLayout() {
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setIsOpen(false)}
+          onClick={toggleSidebar}
         />
       )}
 
       {/* Sidebar */}
-      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
 
       {/* Main Content */}
       <div className="lg:ml-64">
