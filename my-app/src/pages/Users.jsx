@@ -7,6 +7,7 @@ import usePagination from "../hooks/usePagination";
 import Pagination from "../components/Pagination";
 import useLocalStorage from "../hooks/useLocalStorage";
 import useSearch from "../hooks/useSearch";
+import useSort from "../hooks/useSort";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
@@ -25,9 +26,6 @@ export default function Users() {
 
   const [editingUser, setEditingUser] = useState(null);
 
-  // Sorting State
-  const [sortOrder, setSortOrder] = useState("asc");
-
   // Combine API users and locally added users
   const allUsers = useMemo(() => {
     return [...addedUsers, ...users];
@@ -35,20 +33,11 @@ export default function Users() {
 
   const { search, setSearch, filteredData } = useSearch(allUsers, "name");
 
-  // Sort Users
-  const sortedUsers = useMemo(() => {
-    return [...filteredData].sort((a, b) => {
-      if (sortOrder === "asc") {
-        return a.name.localeCompare(b.name);
-      }
-
-      return b.name.localeCompare(a.name);
-    });
-  }, [filteredData, sortOrder]);
+  const { sortOrder, setSortOrder, sortedData } = useSort(filteredData, "name");
 
   // Pagination Hook
   const { currentPage, totalPages, currentData, nextPage, prevPage, goToPage } =
-    usePagination(sortedUsers, 4);
+    usePagination(sortedData, 4);
 
   // Add New User
   const handleAddUser = (newUser) => {
