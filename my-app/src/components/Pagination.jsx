@@ -5,6 +5,21 @@ export default function Pagination({
   prevPage,
   goToPage,
 }) {
+  // Smart Page Numbers
+  const getPageNumbers = () => {
+    const pages = [];
+
+    for (
+      let i = Math.max(1, currentPage - 1);
+      i <= Math.min(totalPages, currentPage + 1);
+      i++
+    ) {
+      pages.push(i);
+    }
+
+    return pages;
+  };
+
   return (
     <div
       className="
@@ -12,6 +27,7 @@ export default function Pagination({
         justify-center
         gap-4
         mt-8
+        flex-wrap
       "
     >
       {/* Previous */}
@@ -31,15 +47,14 @@ export default function Pagination({
 
       {/* Page Numbers */}
       <div className="flex items-center gap-2">
-        {[...Array(totalPages)].map((_, index) => {
-          const pageNumber = index + 1;
-
-          return (
-            <button
-              key={pageNumber}
-              onClick={() => goToPage(pageNumber)}
-              className={`
+        {getPageNumbers().map((pageNumber) => (
+          <button
+            key={pageNumber}
+            onClick={() => goToPage(pageNumber)}
+            className={`
                 px-4 py-2 rounded-lg
+
+                transition
 
                 ${
                   currentPage === pageNumber
@@ -47,11 +62,10 @@ export default function Pagination({
                     : "bg-gray-200 dark:bg-gray-700 dark:text-white"
                 }
               `}
-            >
-              {pageNumber}
-            </button>
-          );
-        })}
+          >
+            {pageNumber}
+          </button>
+        ))}
       </div>
 
       {/* Next */}
