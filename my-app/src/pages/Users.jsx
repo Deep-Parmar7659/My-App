@@ -6,21 +6,12 @@ import UserTable from "../components/UserTable";
 import useDebounce from "../hooks/useDebounce";
 import usePagination from "../hooks/usePagination";
 import Pagination from "../components/Pagination";
+import useLocalStorage from "../hooks/useLocalStorage";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
 
-  // Local Added Users State with localStorage
-  const [addedUsers, setAddedUsers] = useState(() => {
-    const savedUsers = localStorage.getItem("addedUsers");
-
-    return savedUsers ? JSON.parse(savedUsers) : [];
-  });
-
-  // Save users to localStorage whenever addedUsers changes
-  useEffect(() => {
-    localStorage.setItem("addedUsers", JSON.stringify(addedUsers));
-  }, [addedUsers]);
+  const [addedUsers, setAddedUsers] = useLocalStorage("addedUsers", []);
 
   // Error Toast
   useEffect(() => {
