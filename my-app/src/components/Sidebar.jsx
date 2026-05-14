@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
-
+import { useRef } from "react";
+import useOutsideClick from "../hooks/useOutsideClick";
 import {
   FaHome,
   FaUsers,
@@ -9,6 +10,12 @@ import {
 } from "react-icons/fa";
 
 export default function Sidebar({ isOpen, toggleSidebar }) {
+  const sidebarRef = useRef(null);
+  useOutsideClick(sidebarRef, () => {
+    if (isOpen) {
+      toggleSidebar();
+    }
+  });
   // Sidebar Menu Items
   const menuItems = [
     {
@@ -51,6 +58,7 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
 
   return (
     <aside
+      ref={sidebarRef}
       className={`
         fixed top-0 left-0 z-50
 
