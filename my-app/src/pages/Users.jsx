@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import UserTable from "../components/UserTable";
 import useDebounce from "../hooks/useDebounce";
 import usePagination from "../hooks/usePagination";
+import Pagination from "../components/Pagination";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
@@ -244,69 +245,13 @@ export default function Users() {
       )}
 
       {/* Pagination */}
-      <div
-        className="
-          flex items-center
-          justify-center
-          gap-4
-          mt-8
-        "
-      >
-        {/* Previous */}
-        <button
-          onClick={prevPage}
-          disabled={currentPage === 1}
-          className="
-            bg-blue-600
-            text-white
-            px-5 py-2
-            rounded-lg
-            disabled:opacity-50
-          "
-        >
-          Previous
-        </button>
-
-        {/* Page Info */}
-        <div className="flex items-center gap-2">
-          {[...Array(totalPages)].map((_, index) => {
-            const pageNumber = index + 1;
-
-            return (
-              <button
-                key={pageNumber}
-                onClick={() => goToPage(pageNumber)}
-                className={`
-                  px-4 py-2 rounded-lg
-
-                    ${
-                      currentPage === pageNumber
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-200 dark:bg-gray-700 dark:text-white"
-                    }
-                  `}
-              >
-                {pageNumber}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Next */}
-        <button
-          onClick={nextPage}
-          disabled={currentPage === totalPages || totalPages === 0}
-          className="
-            bg-blue-600
-            text-white
-            px-5 py-2
-            rounded-lg
-            disabled:opacity-50
-          "
-        >
-          Next
-        </button>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        nextPage={nextPage}
+        prevPage={prevPage}
+        goToPage={goToPage}
+      />
 
       {/* Add User Modal */}
       <AddUserModal
