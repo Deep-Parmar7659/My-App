@@ -1,7 +1,9 @@
 import useTheme from "../hooks/useTheme";
+import useWindowSize from "../hooks/useWindowSize";
 
 export default function Topbar({ toggleSidebar }) {
   const { isDark, toggleTheme } = useTheme();
+  const { width } = useWindowSize();
 
   return (
     <header
@@ -35,7 +37,9 @@ export default function Topbar({ toggleSidebar }) {
           Admin Dashboard
         </h1>
       </div>
-
+      <p className="text-sm text-gray-500 dark:text-gray-300">
+        Screen Width: {width}
+      </p>
       {/* Right */}
       <div className="flex items-center gap-4">
         <button
