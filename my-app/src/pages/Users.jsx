@@ -66,7 +66,7 @@ export default function Users() {
   }, [filteredUsers, sortOrder]);
 
   // Pagination Hook
-  const { currentPage, totalPages, currentData, nextPage, prevPage } =
+  const { currentPage, totalPages, currentData, nextPage, prevPage, goToPage } =
     usePagination(sortedUsers, 4);
 
   // Add New User
@@ -268,9 +268,29 @@ export default function Users() {
         </button>
 
         {/* Page Info */}
-        <span className="dark:text-white">
-          Page {currentPage} of {totalPages}
-        </span>
+        <div className="flex items-center gap-2">
+          {[...Array(totalPages)].map((_, index) => {
+            const pageNumber = index + 1;
+
+            return (
+              <button
+                key={pageNumber}
+                onClick={() => goToPage(pageNumber)}
+                className={`
+                  px-4 py-2 rounded-lg
+
+                    ${
+                      currentPage === pageNumber
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-200 dark:bg-gray-700 dark:text-white"
+                    }
+                  `}
+              >
+                {pageNumber}
+              </button>
+            );
+          })}
+        </div>
 
         {/* Next */}
         <button

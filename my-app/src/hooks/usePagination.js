@@ -6,7 +6,7 @@ export default function usePagination(data, itemsPerPage = 5) {
   // Total Pages
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
-  // Validate Current Page
+  // Safe Current Page
   const safeCurrentPage =
     currentPage > totalPages && totalPages > 0 ? 1 : currentPage;
 
@@ -30,12 +30,17 @@ export default function usePagination(data, itemsPerPage = 5) {
     }
   };
 
+  // Go To Specific Page
+  const goToPage = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return {
     currentPage: safeCurrentPage,
-    setCurrentPage,
     totalPages,
     currentData,
     nextPage,
     prevPage,
+    goToPage,
   };
 }
