@@ -10,11 +10,13 @@ import useSearch from "../hooks/useSearch";
 import useSort from "../hooks/useSort";
 import useModal from "../hooks/useModal";
 import useDocumentTitle from "../hooks/useDocumentTitle";
+import usePrevious from "../hooks/usePrevious";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
   const [addedUsers, setAddedUsers] = useLocalStorage("addedUsers", []);
   useDocumentTitle("Users");
+  const previousSearch = usePrevious(search);
 
   // Error Toast
   useEffect(() => {
@@ -76,69 +78,38 @@ export default function Users() {
     toast.success("✏️ User Updated Successfully");
   };
 
-  // Error State
   if (error) {
     return <p className="text-red-500">{error}</p>;
   }
 
   return (
     <div>
+      <p className="dark:text-white">
+        Previous Search: {previousSearch || "None"}
+      </p>
       {/* Heading */}
       <div className="mb-6">
-        <h1
-          className="
-            text-3xl font-bold
-            text-gray-800
-            dark:text-white
-          "
-        >
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
           Users
         </h1>
 
-        <p
-          className="
-            text-gray-500
-            dark:text-gray-300
-            mt-2
-          "
-        >
+        <p className="text-gray-500 dark:text-gray-300 mt-2">
           Manage all platform users.
         </p>
       </div>
 
       {/* Top Actions */}
-      <div
-        className="
-          flex flex-col lg:flex-row
-          lg:items-center
-          lg:justify-between
-          gap-4
-          mb-6
-        "
-      >
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
         {/* Add User Button */}
         <button
           onClick={openModal}
-          className="
-            bg-blue-600
-            hover:bg-blue-700
-            text-white
-            px-5 py-3
-            rounded-xl
-            transition
-          "
+          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl transition"
         >
           + Add User
         </button>
 
         {/* Right Controls */}
-        <div
-          className="
-            flex flex-col md:flex-row
-            gap-4
-            w-full lg:w-auto
-          "
-        >
+        <div className="flex flex-col md:flex-row gap-4 w-full lg:w-auto">
           {/* Search */}
           <input
             type="text"
@@ -147,13 +118,7 @@ export default function Users() {
             onChange={(e) => {
               setSearch(e.target.value);
             }}
-            className="
-              w-full md:w-72
-              px-4 py-3
-              rounded-xl border
-              dark:bg-gray-800
-              dark:text-white
-            "
+            className="w-full md:w-72 px-4 py-3 rounded-xl border dark:bg-gray-800 dark:text-white"
           />
 
           {/* Sorting */}
@@ -162,12 +127,7 @@ export default function Users() {
             onChange={(e) => {
               setSortOrder(e.target.value);
             }}
-            className="
-              px-4 py-3
-              rounded-xl border
-              dark:bg-gray-800
-              dark:text-white
-            "
+            className="px-4 py-3 rounded-xl border dark:bg-gray-800 dark:text-white"
           >
             <option value="asc">A → Z</option>
 
@@ -178,30 +138,12 @@ export default function Users() {
 
       {/* Empty State */}
       {currentData.length === 0 ? (
-        <div
-          className="
-            bg-white dark:bg-gray-800
-            p-10 rounded-2xl
-            shadow-lg
-            text-center
-          "
-        >
-          <h2
-            className="
-              text-2xl font-bold
-              dark:text-white
-            "
-          >
+        <div className="bg-white dark:bg-gray-800 p-10 rounded-2xl shadow-lg text-center">
+          <h2 className="text-2xl font-bold dark:text-white">
             🔍 No Users Found
           </h2>
 
-          <p
-            className="
-              text-gray-500
-              dark:text-gray-300
-              mt-2
-            "
-          >
+          <p className="text-gray-500 dark:text-gray-300 mt-2">
             Try searching another user name.
           </p>
         </div>
