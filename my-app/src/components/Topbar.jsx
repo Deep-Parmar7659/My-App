@@ -1,19 +1,14 @@
 import useTheme from "../hooks/useTheme";
 import useWindowSize from "../hooks/useWindowSize";
+import useOnlineStatus from "../hooks/useOnlineStatus";
 
 export default function Topbar({ toggleSidebar }) {
   const { isDark, toggleTheme } = useTheme();
   const { width } = useWindowSize();
+  const isOnline = useOnlineStatus();
 
   return (
-    <header
-      className="
-        bg-white dark:bg-gray-900
-        shadow
-        px-6 py-4
-        flex items-center justify-between
-      "
-    >
+    <header className="bg-white dark:bg-gray-900 shadow px-6 py-4 flex items-center justify-between">
       {/* Left */}
       <div className="flex items-center gap-4">
         {/* Mobile Menu */}
@@ -53,6 +48,9 @@ export default function Topbar({ toggleSidebar }) {
         </button>
         <p className="text-sm text-gray-500 dark:text-gray-300">
           Screen Width: {width}
+        </p>
+        <p className="dark:text-white">
+          {isOnline ? "🟢 Online" : "🔴 Offline"}
         </p>
 
         {/* Profile */}
