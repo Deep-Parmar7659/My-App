@@ -14,6 +14,8 @@ import NotFound from "./pages/NotFound";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
+import CounterDemo from "./pages/CounterDemo";
+
 function App() {
   return (
     <BrowserRouter>
@@ -23,6 +25,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="/counter" element={<CounterDemo />} />
         </Route>
 
         {/* Login */}

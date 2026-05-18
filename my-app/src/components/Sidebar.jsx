@@ -9,6 +9,7 @@ import {
   FaFileAlt,
   FaInfoCircle,
   FaEnvelope,
+  FaHashtag,
 } from "react-icons/fa";
 
 export default function Sidebar({ isOpen, closeSidebar }) {
@@ -51,6 +52,12 @@ export default function Sidebar({ isOpen, closeSidebar }) {
       name: "Contact",
       path: "/contact",
       icon: <FaEnvelope />,
+    },
+
+    {
+      name: "Counter",
+      path: "/counter",
+      icon: <FaHashtag />,
     },
   ];
 
