@@ -1,21 +1,17 @@
-import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 
 import useKeyPress from "../hooks/useKeyPress";
+import useToggle from "../hooks/useToggle";
 
 export default function DashboardLayout() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const closeSidebar = () => {
-    setIsOpen(false);
-  };
-
-  const toggleSidebar = () => {
-    setIsOpen((prev) => !prev);
-  };
+  const {
+    value: isOpen,
+    toggle: toggleSidebar,
+    setFalse: closeSidebar,
+  } = useToggle(false);
 
   // ESC Key Close Sidebar
   useKeyPress("Escape", () => {

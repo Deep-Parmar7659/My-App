@@ -4,20 +4,20 @@ import useLocalStorage from "./useLocalStorage";
 import useToggle from "./useToggle";
 
 export default function useTheme() {
-  // Theme Persistence
   const [theme, setTheme] = useLocalStorage("theme", "light");
 
-  // Boolean Theme State
-  const [isDark, toggleTheme] = useToggle(theme === "dark");
+  const { value: isDark, toggle: toggleTheme } = useToggle(theme === "dark");
 
-  // Sync Theme
   useEffect(() => {
-    const newTheme = isDark ? "dark" : "light";
+    if (isDark) {
+      document.documentElement.classList.add("dark");
 
-    setTheme(newTheme);
+      setTheme("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
 
-    // Apply To HTML
-    document.documentElement.classList.toggle("dark", isDark);
+      setTheme("light");
+    }
   }, [isDark, setTheme]);
 
   return {
