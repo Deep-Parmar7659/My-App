@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Modal from "./Modal";
 import toast from "react-hot-toast";
+import useKeyPress from "../hooks/useKeyPress";
 
 const emptyForm = {
   name: "",
@@ -18,6 +19,12 @@ export default function AddUserModal({
   const [formData, setFormData] = useState(emptyForm);
 
   const [errors, setErrors] = useState({});
+
+  useKeyPress("Escape", () => {
+    if (isOpen) {
+      onClose();
+    }
+  });
 
   // Sync editing user data
   useEffect(() => {

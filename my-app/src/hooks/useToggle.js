@@ -3,10 +3,9 @@ import { useState } from "react";
 export default function useToggle(initialValue = false) {
   const [value, setValue] = useState(initialValue);
 
-  // Toggle Function
-  const toggleValue = () => {
+  const toggle = () => {
     setValue((prev) => !prev);
   };
 
-  return [value, toggleValue];
+  return [value, toggle];
 }

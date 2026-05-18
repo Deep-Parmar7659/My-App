@@ -1,6 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { useRef } from "react";
+
 import useOutsideClick from "../hooks/useOutsideClick";
+
 import {
   FaHome,
   FaUsers,
@@ -9,13 +11,16 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
-export default function Sidebar({ isOpen, toggleSidebar }) {
+export default function Sidebar({ isOpen, closeSidebar }) {
   const sidebarRef = useRef();
+
+  // Outside Click Close
   useOutsideClick(sidebarRef, () => {
-    if (window.innerWidth < 1024) {
-      toggleSidebar();
+    if (window.innerWidth < 1024 && isOpen) {
+      closeSidebar();
     }
   });
+
   // Sidebar Menu Items
   const menuItems = [
     {
@@ -48,13 +53,6 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
       icon: <FaEnvelope />,
     },
   ];
-
-  // Close Mobile Sidebar
-  const closeSidebar = () => {
-    if (window.innerWidth < 1024) {
-      toggleSidebar();
-    }
-  };
 
   return (
     <aside
@@ -92,7 +90,11 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
           <NavLink
             key={item.path}
             to={item.path}
-            onClick={closeSidebar}
+            onClick={() => {
+              if (window.innerWidth < 1024) {
+                closeSidebar();
+              }
+            }}
             className={({ isActive }) =>
               `
                 flex items-center gap-3
