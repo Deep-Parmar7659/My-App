@@ -1,10 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
-import useFetchUsers from "../hooks/useFetchUsers";
-import AddUserModal from "../components/AddUserModal";
 import toast from "react-hot-toast";
-import UserTable from "../components/UserTable";
+
+import useFetchUsers from "../hooks/useFetchUsers";
 import usePagination from "../hooks/usePagination";
-import Pagination from "../components/Pagination";
 import useLocalStorage from "../hooks/useLocalStorage";
 import useSearch from "../hooks/useSearch";
 import useSort from "../hooks/useSort";
@@ -12,11 +10,42 @@ import useModal from "../hooks/useModal";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import usePrevious from "../hooks/usePrevious";
 
+import AddUserModal from "../components/AddUserModal";
+import UserTable from "../components/UserTable";
+import Pagination from "../components/Pagination";
+
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
+
+  // Local Storage Users
   const [addedUsers, setAddedUsers] = useLocalStorage("addedUsers", []);
+
+  // Document Title
   useDocumentTitle("Users");
+
+  // Modal Hook
+  const { isOpen, openModal, closeModal } = useModal();
+
+  // Editing User State
+  const [editingUser, setEditingUser] = useState(null);
+
+  // Combine All Users
+  const allUsers = useMemo(() => {
+    return [...addedUsers, ...users];
+  }, [addedUsers, users]);
+
+  // Search Hook
+  const { search, setSearch, filteredData } = useSearch(allUsers, "name");
+
+  // Previous Search
   const previousSearch = usePrevious(search);
+
+  // Sort Hook
+  const { sortOrder, setSortOrder, sortedData } = useSort(filteredData, "name");
+
+  // Pagination Hook
+  const { currentPage, totalPages, currentData, nextPage, prevPage, goToPage } =
+    usePagination(sortedData, 4);
 
   // Error Toast
   useEffect(() => {
@@ -25,24 +54,7 @@ export default function Users() {
     }
   }, [error]);
 
-  const { isOpen, openModal, closeModal } = useModal();
-
-  const [editingUser, setEditingUser] = useState(null);
-
-  // Combine API users and locally added users
-  const allUsers = useMemo(() => {
-    return [...addedUsers, ...users];
-  }, [addedUsers, users]);
-
-  const { search, setSearch, filteredData } = useSearch(allUsers, "name");
-
-  const { sortOrder, setSortOrder, sortedData } = useSort(filteredData, "name");
-
-  // Pagination Hook
-  const { currentPage, totalPages, currentData, nextPage, prevPage, goToPage } =
-    usePagination(sortedData, 4);
-
-  // Add New User
+  // Add User
   const handleAddUser = (newUser) => {
     setAddedUsers((prevUsers) => [newUser, ...prevUsers]);
 
@@ -78,15 +90,20 @@ export default function Users() {
     toast.success("✏️ User Updated Successfully");
   };
 
+  // Error State
   if (error) {
     return <p className="text-red-500">{error}</p>;
   }
 
   return (
     <div>
-      <p className="dark:text-white">
-        Previous Search: {previousSearch || "None"}
-      </p>
+      {/* Previous Search */}
+      {previousSearch && (
+        <p className="dark:text-white mb-2">
+          Previous Search: {previousSearch}
+        </p>
+      )}
+
       {/* Heading */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
@@ -100,7 +117,7 @@ export default function Users() {
 
       {/* Top Actions */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-        {/* Add User Button */}
+        {/* Add User */}
         <button
           onClick={openModal}
           className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl transition"
@@ -108,25 +125,21 @@ export default function Users() {
           + Add User
         </button>
 
-        {/* Right Controls */}
+        {/* Controls */}
         <div className="flex flex-col md:flex-row gap-4 w-full lg:w-auto">
           {/* Search */}
           <input
             type="text"
             placeholder="Search users..."
             value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-            }}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-full md:w-72 px-4 py-3 rounded-xl border dark:bg-gray-800 dark:text-white"
           />
 
-          {/* Sorting */}
+          {/* Sort */}
           <select
             value={sortOrder}
-            onChange={(e) => {
-              setSortOrder(e.target.value);
-            }}
+            onChange={(e) => setSortOrder(e.target.value)}
             className="px-4 py-3 rounded-xl border dark:bg-gray-800 dark:text-white"
           >
             <option value="asc">A → Z</option>
@@ -165,12 +178,11 @@ export default function Users() {
         goToPage={goToPage}
       />
 
-      {/* Add User Modal */}
+      {/* Modal */}
       <AddUserModal
         isOpen={isOpen}
         onClose={() => {
           closeModal();
-
           setEditingUser(null);
         }}
         onAddUser={handleAddUser}
