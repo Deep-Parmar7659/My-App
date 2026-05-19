@@ -5,15 +5,20 @@ const initialState = {
   email: "",
 };
 
+const ACTIONS = {
+  UPDATE_FIELD: "UPDATE_FIELD",
+  RESET: "RESET",
+};
+
 function reducer(state, action) {
   switch (action.type) {
-    case "UPDATE_FIELD":
+    case ACTIONS.UPDATE_FIELD:
       return {
         ...state,
         [action.field]: action.payload,
       };
 
-    case "RESET":
+    case ACTIONS.RESET:
       return initialState;
 
     default:
@@ -42,7 +47,7 @@ export default function ReducerForm() {
           value={state.name}
           onChange={(e) =>
             dispatch({
-              type: "UPDATE_FIELD",
+              type: ACTIONS.UPDATE_FIELD,
               field: "name",
               payload: e.target.value,
             })
@@ -61,7 +66,7 @@ export default function ReducerForm() {
           value={state.email}
           onChange={(e) =>
             dispatch({
-              type: "UPDATE_FIELD",
+              type: ACTIONS.UPDATE_FIELD,
               field: "email",
               payload: e.target.value,
             })
@@ -89,7 +94,7 @@ export default function ReducerForm() {
 
           <button
             type="button"
-            onClick={() => dispatch({ type: "RESET" })}
+            onClick={() => dispatch({ type: ACTIONS.RESET })}
             className="
               bg-gray-500
               text-white
