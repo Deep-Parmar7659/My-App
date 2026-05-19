@@ -1,21 +1,9 @@
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
 import DashboardCards from "../components/DashboardCards";
 import DashboardCharts from "../components/DashboardCharts";
 import useFetchUsers from "../hooks/useFetchUsers";
 
 export default function Dashboard() {
-  const { logout } = useContext(AuthContext);
   const { users } = useFetchUsers();
-
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-
-    navigate("/");
-  };
 
   return (
     <div>
@@ -37,21 +25,6 @@ export default function Dashboard() {
           >
             Dashboard
           </h1>
-
-          <button
-            onClick={handleLogout}
-            className="
-              bg-red-500
-              text-white
-
-              px-5 py-2
-              rounded-lg
-
-              hover:bg-red-600
-            "
-          >
-            Logout
-          </button>
         </div>
 
         <p
