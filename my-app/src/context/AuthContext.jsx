@@ -7,11 +7,14 @@ const initialState = {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
   })(),
+
+  loading: false,
 };
 
 const ACTIONS = {
   LOGIN: "LOGIN",
   LOGOUT: "LOGOUT",
+  LOADING: "LOADING",
 };
 
 function authReducer(state, action) {
@@ -26,6 +29,12 @@ function authReducer(state, action) {
       return {
         ...state,
         user: null,
+      };
+
+    case ACTIONS.LOADING:
+      return {
+        ...state,
+        loading: action.payload,
       };
 
     default:
@@ -53,13 +62,23 @@ export default function AuthProvider({ children }) {
     localStorage.removeItem("user");
   };
 
+  // Loading
+  const setLoading = (value) => {
+    dispatch({
+      type: ACTIONS.LOADING,
+      payload: value,
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user: state.user,
         isAuth: !!state.user,
+        loading: state.loading,
         login,
         logout,
+        setLoading,
       }}
     >
       {children}
