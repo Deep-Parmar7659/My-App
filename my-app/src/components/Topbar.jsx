@@ -1,9 +1,9 @@
-import useTheme from "../hooks/useTheme";
+import useThemeContext from "../hooks/useThemeContext";
 import useWindowSize from "../hooks/useWindowSize";
 import useOnlineStatus from "../hooks/useOnlineStatus";
 
 export default function Topbar({ toggleSidebar }) {
-  const { isDark, toggleTheme } = useTheme();
+  const { darkMode, toggleTheme } = useThemeContext();
   const { width } = useWindowSize();
   const isOnline = useOnlineStatus();
 
@@ -44,7 +44,7 @@ export default function Topbar({ toggleSidebar }) {
           dark:text-white
           "
         >
-          {isDark ? "☀️ Light" : "🌙 Dark"}
+          {darkMode ? "☀️ Light" : "🌙 Dark"}
         </button>
         <p className="text-sm text-gray-500 dark:text-gray-300">
           Screen Width: {width}
