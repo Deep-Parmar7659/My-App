@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import Modal from "./Modal";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
-import useKeyPress from "../hooks/useKeyPress";
+
+import useForm from "../hooks/useForm";
 
 const emptyForm = {
   name: "",
@@ -16,271 +16,194 @@ export default function AddUserModal({
   editingUser,
   onUpdateUser,
 }) {
-  const [formData, setFormData] = useState(emptyForm);
+  // Custom Form Hook
+  const { values, handleChange, resetForm, setValues } = useForm(emptyForm);
 
-  const [errors, setErrors] = useState({});
-
-  useKeyPress("Escape", () => {
-    if (isOpen) {
-      onClose();
-    }
-  });
-
-  // Sync editing user data
+  // Fill Form When Editing
   useEffect(() => {
-    // Edit Mode
     if (editingUser) {
-      queueMicrotask(() => {
-        setFormData({
-          name: editingUser.name,
-          email: editingUser.email,
-          company: editingUser.company.name,
-        });
-
-        setErrors({});
+      setValues({
+        name: editingUser.name || "",
+        email: editingUser.email || "",
+        company: editingUser.company?.name || "",
       });
+    } else {
+      resetForm();
     }
+  }, [editingUser, resetForm, setValues]);
 
-    // Add Mode
-    else {
-      queueMicrotask(() => {
-        setFormData(emptyForm);
+  // Close Modal
+  if (!isOpen) return null;
 
-        setErrors({});
-      });
-    }
-  }, [editingUser]);
-
-  // Validate Single Field
-  const validateField = (name, value) => {
-    let error = "";
-
-    // Name Validation
-    if (name === "name") {
-      if (!value.trim()) {
-        error = "❌ Name is required";
-      }
-    }
-
-    // Email Validation
-    if (name === "email") {
-      if (!value.trim()) {
-        error = "❌ Email is required";
-      } else if (!/\S+@\S+\.\S+/.test(value)) {
-        error = "❌ Invalid email format";
-      }
-    }
-
-    // Company Validation
-    if (name === "company") {
-      if (!value.trim()) {
-        error = "❌ Company is required";
-      } else if (value.length < 3) {
-        error = "❌ Company name too short";
-      }
-    }
-
-    return error;
-  };
-
-  // Handle Input Change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    // Update Form Data
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-
-    // Live Validation
-    const errorMessage = validateField(name, value);
-
-    setErrors({
-      ...errors,
-      [name]: errorMessage,
-    });
-  };
-
-  // Validate Full Form
-  const validateForm = () => {
-    const newErrors = {};
-
-    // Name Validation
-    if (!formData.name.trim()) {
-      newErrors.name = "❌ Name is required";
-    }
-
-    // Email Validation
-    if (!formData.email.trim()) {
-      newErrors.email = "❌ Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "❌ Invalid email format";
-    }
-
-    // Company Validation
-    if (!formData.company.trim()) {
-      newErrors.company = "❌ Company is required";
-    } else if (formData.company.length < 3) {
-      newErrors.company = "❌ Company name must be at least 3 characters";
-    }
-
-    setErrors(newErrors);
-
-    // Show First Error Toast
-    if (Object.keys(newErrors).length > 0) {
-      const firstError = Object.values(newErrors)[0];
-
-      toast.error(firstError);
-
-      return false;
-    }
-
-    return true;
-  };
-
-  // Submit Form
+  // Submit Handler
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Stop if validation fails
-    if (!validateForm()) return;
+    // Validation
+    if (!values.name || !values.email || !values.company) {
+      toast.error("⚠️ All fields are required");
 
-    // Update Existing User
+      return;
+    }
+
+    // Edit User
     if (editingUser) {
       onUpdateUser({
         ...editingUser,
 
-        name: formData.name,
+        name: values.name,
 
-        email: formData.email,
+        email: values.email,
 
         company: {
-          name: formData.company,
+          name: values.company,
         },
       });
+
+      toast.success("✏️ User Updated Successfully");
     }
 
-    // Add New User
+    // Add User
     else {
-      onAddUser({
+      const newUser = {
         id: Date.now(),
 
-        name: formData.name,
+        name: values.name,
 
-        email: formData.email,
+        email: values.email,
 
         company: {
-          name: formData.company,
+          name: values.company,
         },
-      });
+      };
+
+      onAddUser(newUser);
+
+      toast.success("✅ User Added Successfully");
     }
 
-    // Reset Form
-    setFormData(emptyForm);
+    // Reset + Close
+    resetForm();
 
-    setErrors({});
-
-    // Close Modal
     onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      {/* Heading */}
-      <h2
+    <div
+      className="
+        fixed inset-0
+        bg-black/50
+        flex items-center justify-center
+        z-50
+      "
+    >
+      {/* Modal */}
+      <div
         className="
-          text-2xl font-bold mb-6
-          dark:text-white
+          bg-white dark:bg-gray-900
+          w-full max-w-md
+          rounded-2xl
+          p-6
+          shadow-2xl
         "
       >
-        {editingUser ? "Edit User" : "Add New User"}
-      </h2>
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Name */}
-        <input
-          type="text"
-          name="name"
-          placeholder="Enter name"
-          value={formData.name}
-          onChange={handleChange}
-          className={`
-            w-full
-            px-4 py-3
-            rounded-xl border
-
-            transition-all duration-300
-
-            dark:bg-gray-800
-            dark:text-white
-
-            ${errors.name ? "border-red-500" : "border-gray-300"}
-          `}
-        />
-
-        {/* Email */}
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter email"
-          value={formData.email}
-          onChange={handleChange}
-          className={`
-            w-full
-            px-4 py-3
-            rounded-xl border
-
-            transition-all duration-300
-
-            dark:bg-gray-800
-            dark:text-white
-
-            ${errors.email ? "border-red-500" : "border-gray-300"}
-          `}
-        />
-
-        {/* Company */}
-        <input
-          type="text"
-          name="company"
-          placeholder="Enter company"
-          value={formData.company}
-          onChange={handleChange}
-          className={`
-            w-full
-            px-4 py-3
-            rounded-xl border
-
-            transition-all duration-300
-
-            dark:bg-gray-800
-            dark:text-white
-
-            ${errors.company ? "border-red-500" : "border-gray-300"}
-          `}
-        />
-
-        {/* Submit Button */}
-        <button
-          type="submit"
+        {/* Title */}
+        <h2
           className="
-            w-full
-
-            bg-blue-600
-            hover:bg-blue-700
-
-            text-white
-
-            py-3 rounded-xl
-
-            transition-all duration-300
+            text-2xl font-bold
+            mb-6
+            dark:text-white
           "
         >
-          {editingUser ? "Update User" : "Add User"}
-        </button>
-      </form>
-    </Modal>
+          {editingUser ? "Edit User" : "Add New User"}
+        </h2>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name */}
+          <input
+            type="text"
+            name="name"
+            placeholder="Enter Name"
+            value={values.name}
+            onChange={handleChange}
+            className="
+              w-full
+              px-4 py-3
+              border rounded-xl
+              dark:bg-gray-800
+              dark:text-white
+            "
+          />
+
+          {/* Email */}
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter Email"
+            value={values.email}
+            onChange={handleChange}
+            className="
+              w-full
+              px-4 py-3
+              border rounded-xl
+              dark:bg-gray-800
+              dark:text-white
+            "
+          />
+
+          {/* Company */}
+          <input
+            type="text"
+            name="company"
+            placeholder="Enter Company"
+            value={values.company}
+            onChange={handleChange}
+            className="
+              w-full
+              px-4 py-3
+              border rounded-xl
+              dark:bg-gray-800
+              dark:text-white
+            "
+          />
+
+          {/* Buttons */}
+          <div className="flex justify-end gap-3 pt-4">
+            {/* Cancel */}
+            <button
+              type="button"
+              onClick={() => {
+                resetForm();
+
+                onClose();
+              }}
+              className="
+                px-5 py-2
+                rounded-xl
+                bg-gray-300
+                hover:bg-gray-400
+              "
+            >
+              Cancel
+            </button>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              className="
+                px-5 py-2
+                rounded-xl
+                bg-blue-600
+                hover:bg-blue-700
+                text-white
+              "
+            >
+              {editingUser ? "Update User" : "Add User"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
