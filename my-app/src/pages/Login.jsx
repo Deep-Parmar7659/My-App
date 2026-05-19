@@ -25,7 +25,10 @@ export default function Login() {
     setError("");
 
     // Login
-    login();
+    login({
+      name: "Deep",
+      email: email,
+    });
 
     // Navigate
     navigate("/dashboard", {

@@ -8,7 +8,7 @@ export default function Topbar({ toggleSidebar }) {
   const { darkMode, toggleTheme } = useThemeContext();
   const { width } = useWindowSize();
   const isOnline = useOnlineStatus();
-  const { isAuth, logout } = useAuth();
+  const { user, isAuth, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -55,6 +55,8 @@ export default function Topbar({ toggleSidebar }) {
             Logout
           </button>
         )}
+
+        {user && <p className="dark:text-white">Hi, {user.name}</p>}
 
         {/* Profile */}
         <img

@@ -4,28 +4,31 @@ const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
   // Load auth state from localStorage
-  const [isAuth, setIsAuth] = useState(
-    localStorage.getItem("isAuth") === "true",
-  );
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("user");
+
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   // Login
-  const login = () => {
-    setIsAuth(true);
+  const login = (userData) => {
+    setUser(userData);
 
-    localStorage.setItem("isAuth", "true");
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   // Logout
   const logout = () => {
-    setIsAuth(false);
+    setUser(null);
 
-    localStorage.removeItem("isAuth");
+    localStorage.removeItem("user");
   };
 
   return (
     <AuthContext.Provider
       value={{
-        isAuth,
+        user,
+        isAuth: !!user,
         login,
         logout,
       }}
