@@ -8,7 +8,7 @@ export default function Topbar({ toggleSidebar }) {
   const { darkMode, toggleTheme } = useThemeContext();
   const { width } = useWindowSize();
   const isOnline = useOnlineStatus();
-  const { logout } = useAuth();
+  const { isAuth, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -23,21 +23,12 @@ export default function Topbar({ toggleSidebar }) {
         {/* Mobile Menu */}
         <button
           onClick={toggleSidebar}
-          className="
-            text-2xl
-            lg:hidden
-            dark:text-white
-          "
+          className="text-2xl lg:hidden dark:text-white"
         >
           ☰
         </button>
 
-        <h1
-          className="
-            text-2xl font-bold
-            text-gray-800 dark:text-white
-          "
-        >
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
           Admin Dashboard
         </h1>
       </div>
@@ -45,13 +36,7 @@ export default function Topbar({ toggleSidebar }) {
       <div className="flex items-center gap-4">
         <button
           onClick={toggleTheme}
-          className="
-          bg-gray-200
-          dark:bg-gray-700
-          px-4 py-2
-          rounded-lg
-          dark:text-white
-          "
+          className="bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded-lg dark:text-white"
         >
           {darkMode ? "☀️ Light" : "🌙 Dark"}
         </button>
@@ -62,12 +47,15 @@ export default function Topbar({ toggleSidebar }) {
           {isOnline ? "🟢 Online" : "🔴 Offline"}
         </p>
 
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
-        >
-          Logout
-        </button>
+        {isAuth && (
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+          >
+            Logout
+          </button>
+        )}
+
         {/* Profile */}
         <img
           src="https://i.pravatar.cc/40"
