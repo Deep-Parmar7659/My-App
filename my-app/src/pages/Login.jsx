@@ -1,15 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import Loader from "../components/Loader";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [error, setError] = useState("");
 
-  const { login } = useAuth();
+  const { login, loading, setLoading } = useAuth();
   const navigate = useNavigate();
+
+  if (loading) {
+    return <Loader />;
+  }
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -25,10 +29,17 @@ export default function Login() {
     setError("");
 
     // Login
-    login({
-      name: "Deep",
-      email: email,
-    });
+    setLoading(true);
+    setTimeout(() => {
+      login({
+        name: "Deep",
+        email: email,
+      });
+      setLoading(false);
+      navigate("/dashboard", {
+        replace: true,
+      });
+    }, 1500);
 
     // Navigate
     navigate("/dashboard", {
