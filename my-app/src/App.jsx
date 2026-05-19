@@ -1,5 +1,7 @@
 import "./App.css";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import MainLayout from "./layout/MainLayout";
 import DashboardLayout from "./layout/DashboardLayout";
 
@@ -12,9 +14,10 @@ import Users from "./pages/Users";
 import Posts from "./pages/Posts";
 import NotFound from "./pages/NotFound";
 
-import ProtectedRoute from "./components/ProtectedRoute";
-
 import CounterDemo from "./pages/CounterDemo";
+import ReducerForm from "./pages/ReducerForm";
+
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -25,13 +28,14 @@ function App() {
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
-          <Route path="/counter" element={<CounterDemo />} />
+          <Route path="counter" element={<CounterDemo />} />
+          <Route path="reducer-form" element={<ReducerForm />} />
         </Route>
 
         {/* Login */}
         <Route path="/login" element={<Login />} />
 
-        {/* Dashboard Layout */}
+        {/* Protected Dashboard */}
         <Route
           element={
             <ProtectedRoute>
@@ -40,9 +44,7 @@ function App() {
           }
         >
           <Route path="/dashboard" element={<Dashboard />} />
-
           <Route path="/users" element={<Users />} />
-
           <Route path="/posts" element={<Posts />} />
         </Route>
 

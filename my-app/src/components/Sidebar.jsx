@@ -10,6 +10,7 @@ import {
   FaInfoCircle,
   FaEnvelope,
   FaHashtag,
+  FaWpforms,
 } from "react-icons/fa";
 
 export default function Sidebar({ isOpen, closeSidebar }) {
@@ -58,6 +59,12 @@ export default function Sidebar({ isOpen, closeSidebar }) {
       name: "Counter",
       path: "/counter",
       icon: <FaHashtag />,
+    },
+
+    {
+      name: "Reducer Form",
+      path: "/reducer-form",
+      icon: <FaWpforms />,
     },
   ];
 
