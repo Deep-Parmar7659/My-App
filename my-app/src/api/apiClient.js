@@ -9,7 +9,7 @@ async function request(endpoint, options = {}) {
   });
 
   if (!response.ok) {
-    throw new Error("Something went wrong");
+    throw new Error(`Request failed: ${response.status}`);
   }
 
   return response.json();
