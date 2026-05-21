@@ -1,20 +1,9 @@
-const BASE_URL = "https://jsonplaceholder.typicode.com";
+import { api } from "../api/apiClient";
 
-export const getUsers = async () => {
-  const response = await fetch(`${BASE_URL}/users`);
+export function getUsers() {
+  return api.get("/users");
+}
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch users");
-  }
-  return response.json();
-};
-
-export const getPosts = async () => {
-  const response = await fetch(`${BASE_URL}/posts`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch posts");
-  }
-
-  return response.json();
-};
+export function getPosts() {
+  return api.get("/posts");
+}

@@ -50,7 +50,7 @@ export default function Users() {
   // Error Toast
   useEffect(() => {
     if (error) {
-      toast.error("❌ Something went wrong");
+      toast.error(error);
     }
   }, [error]);
 
