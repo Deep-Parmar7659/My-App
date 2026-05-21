@@ -9,7 +9,9 @@ async function request(endpoint, options = {}) {
   });
 
   if (!response.ok) {
-    throw new Error(`Request failed: ${response.status}`);
+    const errorData = await response.json();
+
+    throw new Error(errorData.message || `Request failed: ${response.status}`);
   }
 
   return response.json();
