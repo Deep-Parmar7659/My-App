@@ -1,45 +1,51 @@
-const BASE_URL = "https://jsonplaceholder.typicode.com";
+const BASE_URL = "https://dummyjson.com";
 
 async function request(endpoint, options = {}) {
+  const { method = "GET", body, headers = {}, signal } = options;
+
   const response = await fetch(`${BASE_URL}${endpoint}`, {
+    method,
     headers: {
       "Content-Type": "application/json",
+      ...headers,
     },
-    ...options,
+    body: body ? JSON.stringify(body) : undefined,
+    signal,
   });
 
-  if (!response.ok) {
-    const errorData = await response.json();
+  const data = await response.json();
 
-    throw new Error(errorData.message || `Request failed: ${response.status}`);
+  if (!response.ok) {
+    throw new Error(data.message || "Something went wrong");
   }
 
-  return response.json();
+  return data;
 }
 
 export const api = {
-  get: (endpoint) => request(endpoint),
+  get: (url, options) =>
+    request(url, {
+      ...options,
+      method: "GET",
+    }),
 
-  post: (endpoint, data) =>
-    request(endpoint, {
+  post: (url, body, options) =>
+    request(url, {
+      ...options,
       method: "POST",
-      body: JSON.stringify(data),
+      body,
     }),
 
-  put: (endpoint, data) =>
-    request(endpoint, {
+  put: (url, body, options) =>
+    request(url, {
+      ...options,
       method: "PUT",
-      body: JSON.stringify(data),
+      body,
     }),
 
-  patch: (endpoint, data) =>
-    request(endpoint, {
-      method: "PATCH",
-      body: JSON.stringify(data),
-    }),
-
-  delete: (endpoint) =>
-    request(endpoint, {
+  delete: (url, options) =>
+    request(url, {
+      ...options,
       method: "DELETE",
     }),
 };

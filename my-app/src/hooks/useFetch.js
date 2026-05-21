@@ -1,37 +1,44 @@
-// Base reusable hook
-import { useCallback, useEffect, useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-export default function useFetch(fetchFunction) {
+export default function useFetch(asyncFunction) {
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const [loading, setLoading] = useState(true);
+  const fetchData = useCallback(
+    async (signal) => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  const [error, setError] = useState("");
+        const result = await asyncFunction(signal);
 
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
+        setData(result);
+      } catch (error) {
+        // Ignore aborted requests
+        if (error.name === "AbortError") {
+          return;
+        }
 
-      setError("");
-
-      const result = await fetchFunction();
-
-      setData(result);
-    } catch (err) {
-      setError(err.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchFunction]);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [asyncFunction],
+  );
 
   useEffect(() => {
-    let isMounted = true;
+    const controller = new AbortController();
+
     const executeFetch = async () => {
-      if (isMounted) await fetchData();
+      await fetchData(controller.signal);
     };
+
     executeFetch();
+
     return () => {
-      isMounted = false;
+      controller.abort();
     };
   }, [fetchData]);
 
