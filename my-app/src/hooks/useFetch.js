@@ -3,18 +3,20 @@ import { useCallback, useEffect, useState } from "react";
 
 export default function useFetch(fetchFunction) {
   const [data, setData] = useState(null);
+
   const [loading, setLoading] = useState(true);
+
   const [error, setError] = useState("");
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
 
+      setError("");
+
       const result = await fetchFunction();
 
       setData(result);
-
-      setError("");
     } catch (err) {
       setError(err.message || "Something went wrong");
     } finally {
@@ -24,11 +26,10 @@ export default function useFetch(fetchFunction) {
 
   useEffect(() => {
     let isMounted = true;
-    if (isMounted) {
-      setTimeout(() => {
-        fetchData();
-      }, 0);
-    }
+    const executeFetch = async () => {
+      if (isMounted) await fetchData();
+    };
+    executeFetch();
     return () => {
       isMounted = false;
     };
