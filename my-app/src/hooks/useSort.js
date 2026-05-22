@@ -6,12 +6,16 @@ export default function useSort(data, sortKey) {
 
   // Sorted Data
   const sortedData = useMemo(() => {
+    if (!Array.isArray(data)) return [];
     return [...data].sort((a, b) => {
+      const aVal = a[sortKey] ?? "";
+      const bVal = b[sortKey] ?? "";
+
       if (sortOrder === "asc") {
-        return a[sortKey].localeCompare(b[sortKey]);
+        return aVal.localeCompare(bVal);
       }
 
-      return b[sortKey].localeCompare(a[sortKey]);
+      return bVal.localeCompare(aVal);
     });
   }, [data, sortKey, sortOrder]);
 

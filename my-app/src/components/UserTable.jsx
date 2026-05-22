@@ -1,7 +1,7 @@
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 
 export default function UserTable({ users, onEdit, onDelete, loading }) {
-  const { copied, copy } = useCopyToClipboard();
+  const { copy, isCopied } = useCopyToClipboard();
 
   if (loading && (!users || users.length === 0)) {
     return (
@@ -9,8 +9,7 @@ export default function UserTable({ users, onEdit, onDelete, loading }) {
         {[...Array(6)].map((_, index) => (
           <div
             key={index}
-            className="
-            animate-pulse bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg"
+            className="animate-pulse bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg"
           >
             <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-2/3 mb-4" />
             <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-full mb-2" />
@@ -27,7 +26,6 @@ export default function UserTable({ users, onEdit, onDelete, loading }) {
         <h2 className="text-2xl font-bold text-gray-700 dark:text-white">
           No Users Found
         </h2>
-
         <p className="text-gray-500 mt-2">Try adding new users.</p>
       </div>
     );
@@ -52,15 +50,18 @@ export default function UserTable({ users, onEdit, onDelete, loading }) {
               key={user.id}
               className="border-t dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
             >
-              {/* Name */}
-              <td className="px-6 py-4 dark:text-white">{user.name}</td>
+              {/* Name — dummyjson uses firstName + lastName, locally added users may use name */}
+              <td className="px-6 py-4 dark:text-white font-medium">
+                {user.name ??
+                  `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim()}
+              </td>
               {/* Email */}
               <td className="px-6 py-4 text-gray-500 dark:text-gray-300">
                 {user.email}
               </td>
-              {/* Company */}
+              {/* Company — dummyjson uses company.name, locally added users may use company directly */}
               <td className="px-6 py-4 text-gray-500 dark:text-gray-300">
-                {user.company.name}
+                {user.company?.name ?? user.company ?? "—"}
               </td>
               {/* Actions */}
               <td className="px-6 py-4">
@@ -74,18 +75,17 @@ export default function UserTable({ users, onEdit, onDelete, loading }) {
                   </button>
                   {/* Delete */}
                   <button
-                    onClick={() => {
-                      onDelete(user.id);
-                    }}
+                    onClick={() => onDelete(user.id)}
                     className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
                   >
                     Delete
                   </button>
+                  {/* Copy */}
                   <button
-                    onClick={() => copy(user.email)}
+                    onClick={() => copy(user.email, user.id)}
                     className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg"
                   >
-                    {copied ? "Copied" : "Copy"}
+                    {isCopied(user.id) ? "Copied ✓" : "Copy"}
                   </button>
                 </div>
               </td>

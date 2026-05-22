@@ -35,13 +35,16 @@ export default function Users() {
   }, [addedUsers, users]);
 
   // Search Hook
-  const { search, setSearch, filteredData } = useSearch(allUsers, "name");
+  const { search, setSearch, filteredData } = useSearch(allUsers, "firstName");
 
   // Previous Search
   const previousSearch = usePrevious(search);
 
   // Sort Hook
-  const { sortOrder, setSortOrder, sortedData } = useSort(filteredData, "name");
+  const { sortOrder, setSortOrder, sortedData } = useSort(
+    filteredData,
+    "firstName",
+  );
 
   // Pagination Hook
   const { currentPage, totalPages, currentData, nextPage, prevPage, goToPage } =

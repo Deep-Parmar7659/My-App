@@ -19,18 +19,24 @@ export default function AddUserModal({
   // Custom Form Hook
   const { values, handleChange, resetForm, setValues } = useForm(emptyForm);
 
-  // Fill Form When Editing
+  // Fill Form When Editing — only re-run when editingUser or isOpen changes
+  // DO NOT put resetForm/setValues in deps — they are new refs every render
   useEffect(() => {
+    if (!isOpen) return;
+
     if (editingUser) {
       setValues({
-        name: editingUser.name || "",
+        name:
+          editingUser.name ||
+          `${editingUser.firstName ?? ""} ${editingUser.lastName ?? ""}`.trim(),
         email: editingUser.email || "",
-        company: editingUser.company?.name || "",
+        company: editingUser.company?.name || editingUser.company || "",
       });
     } else {
       resetForm();
     }
-  }, [editingUser, resetForm, setValues]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingUser, isOpen]);
 
   // Close Modal
   if (!isOpen) return null;
@@ -42,7 +48,6 @@ export default function AddUserModal({
     // Validation
     if (!values.name || !values.email || !values.company) {
       toast.error("⚠️ All fields are required");
-
       return;
     }
 
@@ -50,16 +55,10 @@ export default function AddUserModal({
     if (editingUser) {
       onUpdateUser({
         ...editingUser,
-
         name: values.name,
-
         email: values.email,
-
-        company: {
-          name: values.company,
-        },
+        company: { name: values.company },
       });
-
       toast.success("✏️ User Updated Successfully");
     }
 
@@ -67,24 +66,16 @@ export default function AddUserModal({
     else {
       const newUser = {
         id: Date.now(),
-
         name: values.name,
-
         email: values.email,
-
-        company: {
-          name: values.company,
-        },
+        company: { name: values.company },
       };
-
       onAddUser(newUser);
-
       toast.success("✅ User Added Successfully");
     }
 
     // Reset + Close
     resetForm();
-
     onClose();
   };
 
@@ -175,7 +166,6 @@ export default function AddUserModal({
               type="button"
               onClick={() => {
                 resetForm();
-
                 onClose();
               }}
               className="

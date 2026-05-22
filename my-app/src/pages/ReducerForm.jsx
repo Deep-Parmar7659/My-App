@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 
 const initialState = {
   name: "",
@@ -28,11 +28,24 @@ function reducer(state, action) {
 
 export default function ReducerForm() {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [submitted, setSubmitted] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (!state.name.trim() || !state.email.trim()) {
+      setSubmitted({
+        success: false,
+        message: "⚠️ Please fill in all fields.",
+      });
+      return;
+    }
+
     console.log(state);
+    setSubmitted({
+      success: true,
+      message: `✅ Submitted! Name: ${state.name}, Email: ${state.email}`,
+    });
   };
 
   return (
@@ -78,6 +91,19 @@ export default function ReducerForm() {
           "
         />
 
+        {/* Submit Feedback */}
+        {submitted && (
+          <div
+            className={`px-4 py-3 rounded-xl text-sm font-medium ${
+              submitted.success
+                ? "bg-green-100 text-green-700 border border-green-300"
+                : "bg-red-100 text-red-700 border border-red-300"
+            }`}
+          >
+            {submitted.message}
+          </div>
+        )}
+
         {/* Buttons */}
         <div className="flex gap-4">
           <button
@@ -94,7 +120,10 @@ export default function ReducerForm() {
 
           <button
             type="button"
-            onClick={() => dispatch({ type: ACTIONS.RESET })}
+            onClick={() => {
+              dispatch({ type: ACTIONS.RESET });
+              setSubmitted(null);
+            }}
             className="
               bg-gray-500
               text-white

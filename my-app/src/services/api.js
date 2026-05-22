@@ -1,11 +1,15 @@
 import { api } from "../api/apiClient";
 
-export function getUsers() {
-  return api.get("/users");
+export async function getUsers(signal) {
+  const data = await api.get("/users", { signal });
+  // dummyjson returns { users: [...], total, skip, limit }
+  return data.users ?? data;
 }
 
-export function getPosts() {
-  return api.get("/posts");
+export async function getPosts(signal) {
+  const data = await api.get("/posts", { signal });
+  // dummyjson returns { posts: [...], total, skip, limit }
+  return data.posts ?? data;
 }
 
 export function createUser(userData) {

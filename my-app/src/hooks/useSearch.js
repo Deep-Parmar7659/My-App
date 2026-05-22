@@ -10,8 +10,11 @@ export default function useSearch(data, searchKey) {
 
   // Filtered Data
   const filteredData = useMemo(() => {
+    if (!Array.isArray(data)) return [];
     return data.filter((item) =>
-      item[searchKey].toLowerCase().includes(debouncedSearch.toLowerCase()),
+      (item[searchKey] ?? "")
+        .toLowerCase()
+        .includes(debouncedSearch.toLowerCase()),
     );
   }, [data, searchKey, debouncedSearch]);
 
