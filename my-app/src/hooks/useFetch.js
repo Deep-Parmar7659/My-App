@@ -1,22 +1,27 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useState } from "react";
 
 export default function useFetch(asyncFunction) {
   const [data, setData] = useState(null);
+
   const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState(null);
 
-  const fetchData = useCallback(
-    async (signal) => {
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function fetchData() {
       try {
         setLoading(true);
         setError(null);
 
-        const result = await asyncFunction(signal);
+        const result = await asyncFunction(controller.signal);
 
         setData(result);
       } catch (error) {
-        // Ignore aborted requests
         if (error.name === "AbortError") {
+          console.log("Request Cancelled");
+
           return;
         }
 
@@ -24,28 +29,20 @@ export default function useFetch(asyncFunction) {
       } finally {
         setLoading(false);
       }
-    },
-    [asyncFunction],
-  );
+    }
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const executeFetch = async () => {
-      await fetchData(controller.signal);
-    };
-
-    executeFetch();
+    fetchData();
 
     return () => {
+      console.log("useFetch Cleanup Running");
+
       controller.abort();
     };
-  }, [fetchData]);
+  }, [asyncFunction]);
 
   return {
     data,
     loading,
     error,
-    refetch: fetchData,
   };
 }
