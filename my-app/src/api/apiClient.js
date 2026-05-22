@@ -43,6 +43,13 @@ export const api = {
       body,
     }),
 
+  patch: (url, body, options) =>
+    request(url, {
+      ...options,
+      method: "PATCH",
+      body,
+    }),
+
   delete: (url, options) =>
     request(url, {
       ...options,

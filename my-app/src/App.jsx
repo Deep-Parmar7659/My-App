@@ -19,6 +19,7 @@ import ReducerForm from "./pages/ReducerForm";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import TestAbort from "./pages/TestAbort";
+import TestApiAbort from "./pages/TestApiAbort";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="counter" element={<CounterDemo />} />
           <Route path="reducer-form" element={<ReducerForm />} />
           <Route path="test-abort" element={<TestAbort />} />
+          <Route path="test-api-abort" element={<TestApiAbort />} />
         </Route>
 
         {/* Login */}
