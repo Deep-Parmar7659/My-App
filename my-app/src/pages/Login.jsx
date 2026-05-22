@@ -21,55 +21,27 @@ export default function Login() {
     // Validation
     if (!email || !password) {
       setError("Please fill all fields");
-
       return;
     }
 
-    // Clear error
     setError("");
-
-    // Login
     setLoading(true);
-    setTimeout(() => {
-      login({
-        name: "Deep",
-        email: email,
-      });
-      setLoading(false);
-      navigate("/dashboard", {
-        replace: true,
-      });
-    }, 1500);
 
-    // Navigate
-    navigate("/dashboard", {
-      replace: true,
-    });
+    // Simulate auth delay, then login and navigate ONCE
+    setTimeout(() => {
+      login({ name: "Deep", email });
+      setLoading(false);
+      navigate("/dashboard", { replace: true });
+    }, 1500);
   };
 
   return (
-    <div
-      className="
-        min-h-screen
-        flex items-center justify-center
-        bg-gray-100 dark:bg-gray-900
-      "
-    >
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
       <form
         onSubmit={handleLogin}
-        className="
-          bg-white dark:bg-gray-800
-          p-8 rounded-xl shadow-lg
-          w-full max-w-md
-        "
+        className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md"
       >
-        <h1
-          className="
-            text-3xl font-bold mb-6
-            text-center
-            dark:text-white
-          "
-        >
+        <h1 className="text-3xl font-bold mb-6 text-center dark:text-white">
           Login
         </h1>
 
@@ -82,10 +54,7 @@ export default function Login() {
           placeholder="Enter email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="
-            w-full mb-4 p-3
-            border rounded-lg
-          "
+          className="w-full mb-4 p-3 border rounded-lg dark:bg-gray-700 dark:text-white"
         />
 
         {/* Password */}
@@ -94,23 +63,13 @@ export default function Login() {
           placeholder="Enter password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="
-            w-full mb-6 p-3
-            border rounded-lg
-          "
+          className="w-full mb-6 p-3 border rounded-lg dark:bg-gray-700 dark:text-white"
         />
 
         {/* Button */}
         <button
           type="submit"
-          className="
-            w-full
-            bg-blue-600
-            text-white
-            py-3 rounded-lg
-            hover:bg-blue-700
-            transition
-          "
+          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
         >
           Login
         </button>

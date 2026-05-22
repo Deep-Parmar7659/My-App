@@ -13,16 +13,11 @@ import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import Posts from "./pages/Posts";
 import NotFound from "./pages/NotFound";
-
 import CounterDemo from "./pages/CounterDemo";
 import ReducerForm from "./pages/ReducerForm";
+import SearchUsers from "./pages/SearchUsers";
 
 import ProtectedRoute from "./components/ProtectedRoute";
-import TestAbort from "./pages/TestAbort";
-import TestApiAbort from "./pages/TestApiAbort";
-import TestUseFetchAbort from "./pages/TestUseFetchAbort";
-import TestDebounce from "./pages/TestDebounce";
-import SearchUsers from "./pages/SearchUsers";
 
 function App() {
   return (
@@ -35,10 +30,6 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="counter" element={<CounterDemo />} />
           <Route path="reducer-form" element={<ReducerForm />} />
-          <Route path="test-abort" element={<TestAbort />} />
-          <Route path="test-api-abort" element={<TestApiAbort />} />
-          <Route path="test-usefetch-abort" element={<TestUseFetchAbort />} />
-          <Route path="test-debounce" element={<TestDebounce />} />
           <Route path="search-users" element={<SearchUsers />} />
         </Route>
 

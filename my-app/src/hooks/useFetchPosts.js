@@ -1,4 +1,3 @@
-// Posts logic
 import useFetch from "./useFetch";
 import { getPosts } from "../services/api";
 

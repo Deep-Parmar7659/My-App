@@ -4,10 +4,9 @@ import { AuthContext } from "../context/AuthContext";
 
 export default function Navbar() {
   const { isAuth, logout } = useContext(AuthContext);
+
   const navActiveStyle = ({ isActive }) =>
-    isActive
-      ? "text-blue-400 font-seminbold"
-      : "text-white hover:text-blue-300";
+    isActive ? "text-blue-400 font-semibold" : "text-white hover:text-blue-300";
 
   return (
     <nav className="bg-gray-900 text-white px-6 py-4 shadow-md">
@@ -20,19 +19,15 @@ export default function Navbar() {
           <NavLink to="/" className={navActiveStyle}>
             Home
           </NavLink>
-
           <NavLink to="/about" className={navActiveStyle}>
             About
           </NavLink>
-
           <NavLink to="/contact" className={navActiveStyle}>
             Contact
           </NavLink>
-
           <NavLink to="/dashboard" className={navActiveStyle}>
             Dashboard
           </NavLink>
-
           <NavLink to="/users" className={navActiveStyle}>
             Users
           </NavLink>

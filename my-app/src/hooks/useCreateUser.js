@@ -1,5 +1,5 @@
 import useMutation from "./useMutation";
-import { createUser } from "../api/userApi";
+import { createUser } from "../services/api";
 
 export default function useCreateUser() {
   return useMutation(createUser);

@@ -1,6 +1,4 @@
-// Dashboard logic
-// Dashboard logic
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getPosts, getUsers } from "../services/api";
 
 export default function useDashboardStats() {
@@ -13,7 +11,6 @@ export default function useDashboardStats() {
       setLoading(true);
       setError(null);
 
-      // getUsers/getPosts already return plain arrays now
       const [usersData, postsData] = await Promise.all([
         getUsers(signal),
         getPosts(signal),
@@ -33,11 +30,9 @@ export default function useDashboardStats() {
 
   useEffect(() => {
     const controller = new AbortController();
-    // Use a microtask or timeout to avoid synchronous setState during render phase
-    // which can trigger cascading render warnings in some linting/strict environments
-    setTimeout(() => {
-      void fetchStats(controller.signal);
-    }, 0);
+    // Use a microtask or timeout to ensure the state update
+    // happens after the initial render cycle to avoid cascading renders
+    Promise.resolve().then(() => fetchStats(controller.signal));
     return () => controller.abort();
   }, [fetchStats]);
 

@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react";
-
 import useDebounce from "./useDebounce";
 
 export default function useSearchAsync(searchFunction, delay = 1000) {
   const [search, setSearch] = useState("");
-
   const [results, setResults] = useState([]);
-
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState(null);
 
   const debouncedSearch = useDebounce(search, delay);
@@ -19,7 +15,6 @@ export default function useSearchAsync(searchFunction, delay = 1000) {
     async function fetchResults() {
       if (!debouncedSearch.trim()) {
         setResults([]);
-
         return;
       }
 
@@ -27,16 +22,11 @@ export default function useSearchAsync(searchFunction, delay = 1000) {
         setLoading(true);
         setError(null);
 
+        // searchFunction (searchUsers) returns a plain array
         const data = await searchFunction(debouncedSearch, controller.signal);
-
-        setResults(data.users || []);
+        setResults(Array.isArray(data) ? data : []);
       } catch (error) {
-        if (error.name === "AbortError") {
-          console.log("Request Cancelled");
-
-          return;
-        }
-
+        if (error.name === "AbortError") return;
         setError(error.message);
       } finally {
         if (!controller.signal.aborted) {
@@ -47,18 +37,8 @@ export default function useSearchAsync(searchFunction, delay = 1000) {
 
     fetchResults();
 
-    return () => {
-      console.log("Search Cleanup Running");
-
-      controller.abort();
-    };
+    return () => controller.abort();
   }, [debouncedSearch, searchFunction]);
 
-  return {
-    search,
-    setSearch,
-    results,
-    loading,
-    error,
-  };
+  return { search, setSearch, results, loading, error };
 }
