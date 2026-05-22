@@ -22,6 +22,7 @@ import TestAbort from "./pages/TestAbort";
 import TestApiAbort from "./pages/TestApiAbort";
 import TestUseFetchAbort from "./pages/TestUseFetchAbort";
 import TestDebounce from "./pages/TestDebounce";
+import SearchUsers from "./pages/SearchUsers";
 
 function App() {
   return (
@@ -37,7 +38,8 @@ function App() {
           <Route path="test-abort" element={<TestAbort />} />
           <Route path="test-api-abort" element={<TestApiAbort />} />
           <Route path="test-usefetch-abort" element={<TestUseFetchAbort />} />
-          <Route path="/test-debounce" element={<TestDebounce />} />
+          <Route path="test-debounce" element={<TestDebounce />} />
+          <Route path="search-users" element={<SearchUsers />} />
         </Route>
 
         {/* Login */}

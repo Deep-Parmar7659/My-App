@@ -5,3 +5,9 @@ export async function getUsers(signal) {
     signal,
   });
 }
+
+export async function searchUsers(search, signal) {
+  return api.get(`/users/search?q=${search}`, {
+    signal,
+  });
+}
