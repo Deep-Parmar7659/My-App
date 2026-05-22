@@ -21,6 +21,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import TestAbort from "./pages/TestAbort";
 import TestApiAbort from "./pages/TestApiAbort";
 import TestUseFetchAbort from "./pages/TestUseFetchAbort";
+import TestDebounce from "./pages/TestDebounce";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="test-abort" element={<TestAbort />} />
           <Route path="test-api-abort" element={<TestApiAbort />} />
           <Route path="test-usefetch-abort" element={<TestUseFetchAbort />} />
+          <Route path="/test-debounce" element={<TestDebounce />} />
         </Route>
 
         {/* Login */}
