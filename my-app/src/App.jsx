@@ -18,6 +18,7 @@ import CounterDemo from "./pages/CounterDemo";
 import ReducerForm from "./pages/ReducerForm";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import TestAbort from "./pages/TestAbort";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="counter" element={<CounterDemo />} />
           <Route path="reducer-form" element={<ReducerForm />} />
+          <Route path="test-abort" element={<TestAbort />} />
         </Route>
 
         {/* Login */}
