@@ -35,20 +35,43 @@ export default function Users() {
   }, [addedUsers, users]);
 
   // Search Hook
-  const { search, setSearch, filteredData } = useSearch(allUsers, "firstName");
+  const { search, setSearch, filteredData } = useSearch(allUsers, "name");
 
   // Previous Search
   const previousSearch = usePrevious(search);
 
-  // Sort Hook
-  const { sortOrder, setSortOrder, sortedData } = useSort(
-    filteredData,
-    "firstName",
-  );
+  // Sort Hook (Only API users sorted)
+  const { sortOrder, setSortOrder } = useSort([], "name");
+
+  const sortedData = useMemo(() => {
+    // Manual users stay on top
+    const manualUsers = filteredData.filter((user) => user.id > 1000000000);
+
+    // API users
+    const apiUsers = filteredData.filter((user) => user.id <= 1000000000);
+
+    // Sort only API users
+    const sortedApiUsers = [...apiUsers].sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.name.localeCompare(b.name);
+      }
+
+      return b.name.localeCompare(a.name);
+    });
+
+    return [...manualUsers, ...sortedApiUsers];
+  }, [filteredData, sortOrder]);
 
   // Pagination Hook
-  const { currentPage, totalPages, currentData, nextPage, prevPage, goToPage } =
-    usePagination(sortedData, 4);
+  const {
+    currentPage,
+    totalPages,
+    currentData,
+    nextPage,
+    prevPage,
+    goToPage,
+    setCurrentPage,
+  } = usePagination(sortedData, 4);
 
   // Error Toast
   useEffect(() => {
@@ -60,6 +83,9 @@ export default function Users() {
   // Add User
   const handleAddUser = (newUser) => {
     setAddedUsers((prevUsers) => [newUser, ...prevUsers]);
+
+    // Move to first page instantly
+    setCurrentPage(1);
 
     toast.success("✅ User Added Successfully");
   };

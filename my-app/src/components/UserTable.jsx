@@ -52,8 +52,7 @@ export default function UserTable({ users, onEdit, onDelete, loading }) {
             >
               {/* Name — dummyjson uses firstName + lastName, locally added users may use name */}
               <td className="px-6 py-4 dark:text-white font-medium">
-                {user.name ??
-                  `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim()}
+                {user.name ?? `${user.name ?? ""} ${user.name ?? ""}`.trim()}
               </td>
               {/* Email */}
               <td className="px-6 py-4 text-gray-500 dark:text-gray-300">

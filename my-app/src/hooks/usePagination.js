@@ -36,11 +36,12 @@ export default function usePagination(data, itemsPerPage = 5) {
   };
 
   return {
-    currentPage: safeCurrentPage,
+    currentPage,
     totalPages,
     currentData,
     nextPage,
     prevPage,
     goToPage,
+    setCurrentPage,
   };
 }

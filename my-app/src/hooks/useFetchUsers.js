@@ -3,15 +3,28 @@
 // Now reusable anywhere
 // Users logic
 import useFetch from "./useFetch";
-import { getUsers } from "../services/api";
+import { getUsers } from "../api/userService";
 
 export default function useFetchUsers() {
-  const { data: users, loading, error, refetch } = useFetch(getUsers);
+  const { data, loading, error } = useFetch(getUsers);
+
+  const normalizedUsers = Array.isArray(data?.users)
+    ? data.users.map((user) => ({
+        id: user.id,
+
+        name: `${user.firstName} ${user.lastName}`,
+
+        email: user.email,
+
+        age: user.age,
+
+        company: user.company,
+      }))
+    : [];
 
   return {
-    users: users || [],
+    users: normalizedUsers,
     loading,
     error,
-    refetch,
   };
 }
