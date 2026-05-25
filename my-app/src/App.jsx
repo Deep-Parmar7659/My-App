@@ -18,6 +18,7 @@ import ReducerForm from "./pages/ReducerForm";
 import SearchUsers from "./pages/SearchUsers";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import UserSearch from "./pages/UserSearch";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="counter" element={<CounterDemo />} />
           <Route path="reducer-form" element={<ReducerForm />} />
           <Route path="search-users" element={<SearchUsers />} />
+          <Route path="user-search" element={<UserSearch />} />
         </Route>
 
         {/* Login */}
