@@ -13,6 +13,7 @@ import usePrevious from "../hooks/usePrevious";
 import AddUserModal from "../components/AddUserModal";
 import UserTable from "../components/UserTable";
 import Pagination from "../components/Pagination";
+import useDebounce from "../hooks/useDebounce";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
@@ -35,11 +36,11 @@ export default function Users() {
   }, [addedUsers, users]);
 
   // Search Hook
-  const { search, setSearch, filteredData } = useSearch(allUsers, "name");
-
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
+  const { filteredData } = useSearch(allUsers, "name", debouncedSearch);
   // Previous Search
   const previousSearch = usePrevious(search);
-
   // Sort Hook (Only API users sorted)
   const { sortOrder, setSortOrder } = useSort([], "name");
 

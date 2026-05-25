@@ -1,26 +1,16 @@
-import { useMemo, useState } from "react";
-import useDebounce from "./useDebounce";
+import { useMemo } from "react";
 
-export default function useSearch(data, searchKey) {
-  // Search State
-  const [search, setSearch] = useState("");
-
-  // Debounced Search
-  const debouncedSearch = useDebounce(search, 300);
-
-  // Filtered Data
+export default function useSearch(data, key, searchValue) {
   const filteredData = useMemo(() => {
-    if (!Array.isArray(data)) return [];
+    if (!searchValue) {
+      return data;
+    }
     return data.filter((item) =>
-      (item[searchKey] ?? "")
-        .toLowerCase()
-        .includes(debouncedSearch.toLowerCase()),
+      item[key]?.toLowerCase().includes(searchValue.toLowerCase()),
     );
-  }, [data, searchKey, debouncedSearch]);
+  }, [data, key, searchValue]);
 
   return {
-    search,
-    setSearch,
     filteredData,
   };
 }
