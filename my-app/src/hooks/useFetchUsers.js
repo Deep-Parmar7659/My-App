@@ -14,10 +14,11 @@ export default function useFetchUsers() {
 
   const normalizedUsers = data.map((user) => ({
     id: user.id,
-    name: `${user.firstName} ${user.lastName}`,
+    name: user.name || `${user.firstName ?? ""} ${user.lastName ?? ""}`,
     email: user.email,
     age: user.age,
-    company: user.company,
+    company:
+      typeof user.company === "object" ? user.company : { name: user.company },
   }));
 
   return {

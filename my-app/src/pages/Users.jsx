@@ -14,9 +14,12 @@ import AddUserModal from "../components/AddUserModal";
 import UserTable from "../components/UserTable";
 import Pagination from "../components/Pagination";
 import useDebounce from "../hooks/useDebounce";
+import useUserMutations from "../hooks/useUserMutations";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
+  const { addUserMutation, updateUserMutation, deleteUserMutation } =
+    useUserMutations();
 
   // Local Storage Users
   const [addedUsers, setAddedUsers] = useLocalStorage("addedUsers", []);
@@ -77,21 +80,21 @@ export default function Users() {
   }, [error]);
 
   // Add User
-  const handleAddUser = (newUser) => {
-    setAddedUsers((prevUsers) => {
-      const updatedUsers = [newUser, ...prevUsers];
-      return updatedUsers;
-    });
-    toast.success("✅ User Added Successfully");
+  const handleAddUser = async (newUser) => {
+    try {
+      await addUserMutation.mutateAsync(newUser);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // Delete User
-  const handleDeleteUser = (id) => {
-    const updatedUsers = addedUsers.filter((user) => user.id !== id);
-
-    setAddedUsers(updatedUsers);
-
-    toast.success("🗑️ User Deleted Successfully");
+  const handleDeleteUser = async (id) => {
+    try {
+      await deleteUserMutation.mutateAsync(id);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // Edit User
@@ -102,16 +105,29 @@ export default function Users() {
   };
 
   // Update User
-  const handleUpdateUser = (updatedUser) => {
-    const updatedUsers = addedUsers.map((user) =>
-      user.id === updatedUser.id ? updatedUser : user,
-    );
+  const handleUpdateUser = async (updatedUser) => {
+    try {
+      // Manual Users
+      if (updatedUser.id > 1000000000) {
+        const updatedManualUsers = addedUsers.map((user) =>
+          user.id === updatedUser.id ? updatedUser : user,
+        );
+        setAddedUsers(updatedManualUsers);
+        toast.success("✏️ User Updated Successfully");
+        closeModal();
+        return;
+      }
+      // API Users
+      await updateUserMutation.mutateAsync({
+        id: updatedUser.id,
+        userData: updatedUser,
+      });
 
-    setAddedUsers(updatedUsers);
-
-    setEditingUser(null);
-
-    toast.success("✏️ User Updated Successfully");
+      toast.success("✏️ User Updated Successfully");
+      closeModal();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // Error State
