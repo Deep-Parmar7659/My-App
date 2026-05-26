@@ -1,13 +1,23 @@
 import useDocumentTitle from "../hooks/useDocumentTitle";
-import useFetchPosts from "../hooks/useFetchPosts";
+import useInfinitePosts from "../hooks/useInfinitePosts";
+import LoadMoreTrigger from "../components/LoadMoreTrigger";
 
 export default function Posts() {
-  const { posts, loading, error } = useFetchPosts();
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfinitePosts();
+
+  const posts = data?.pages.flatMap((page) => page.posts) || [];
 
   useDocumentTitle("Posts");
 
   // Loading State — skeleton cards matching post card layout
-  if (loading) {
+  if (isLoading) {
     return (
       <div>
         {/* Heading Skeleton */}
@@ -40,7 +50,11 @@ export default function Posts() {
 
   // Error State
   if (error) {
-    return <h1 className="text-2xl text-red-500 text-center mt-10">{error}</h1>;
+    return (
+      <h1 className="text-2xl text-red-500 text-center mt-10">
+        {error.message}
+      </h1>
+    );
   }
 
   return (
@@ -55,7 +69,7 @@ export default function Posts() {
 
       {/* Posts Grid */}
       <div className="grid gap-6">
-        {posts.slice(0, 12).map((post) => (
+        {posts.map((post) => (
           <div
             key={post.id}
             className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg transition"
@@ -77,6 +91,23 @@ export default function Posts() {
           </div>
         ))}
       </div>
+
+      {/* Auto Infinite Scroll */}
+      <LoadMoreTrigger
+        onLoadMore={fetchNextPage}
+        hasNextPage={hasNextPage}
+        isFetching={isFetchingNextPage}
+      />
+
+      {/* Loading State */}
+      {isFetchingNextPage && (
+        <p className="text-center mt-6 text-gray-500">Loading more posts...</p>
+      )}
+
+      {/* End Message */}
+      {!hasNextPage && (
+        <p className="text-center mt-6 text-gray-500">No More Posts</p>
+      )}
     </div>
   );
 }
