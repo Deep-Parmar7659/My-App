@@ -82,26 +82,38 @@ export default function Users() {
   // Add User
   const handleAddUser = async (newUser) => {
     try {
+      // Save in localStorage
+      setAddedUsers([newUser, ...addedUsers]);
+      // Update React Query cache
       await addUserMutation.mutateAsync(newUser);
     } catch (error) {
       console.log(error);
     }
   };
 
+  // Edit User (Open Modal)
+  const handleEditUser = (user) => {
+    setEditingUser(user);
+    openModal();
+  };
+
   // Delete User
   const handleDeleteUser = async (id) => {
     try {
+      // Manual User
+      if (id > 1000000000) {
+        const updatedManualUsers = addedUsers.filter((user) => user.id !== id);
+        setAddedUsers(updatedManualUsers);
+        toast.success("🗑️ User Deleted Successfully");
+        return;
+      }
+
+      // API User
       await deleteUserMutation.mutateAsync(id);
+      toast.success("🗑️ User Deleted Successfully");
     } catch (error) {
       console.log(error);
     }
-  };
-
-  // Edit User
-  const handleEditUser = (user) => {
-    setEditingUser(user);
-
-    openModal();
   };
 
   // Update User

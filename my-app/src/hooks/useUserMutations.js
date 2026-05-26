@@ -29,10 +29,36 @@ export default function useUserMutations() {
   // DELETE USER
   const deleteUserMutation = useMutation({
     mutationFn: deleteUser,
-    onSuccess: (_, deletedUserId) => {
+
+    // Before API Request
+    onMutate: async (deletedUserId) => {
+      // Stop ongoing queries
+      await queryClient.cancelQueries({
+        queryKey: ["users"],
+      });
+
+      // Snapshot previous users
+      const previousUsers = queryClient.getQueryData(["users"]);
+
+      // Instantly remove user
       queryClient.setQueryData(["users"], (oldUsers = []) =>
         oldUsers.filter((user) => user.id !== deletedUserId),
       );
+
+      // Return snapshot for rollback
+      return { previousUsers };
+    },
+
+    // Rollback if API fails
+    onError: (error, deletedUserId, context) => {
+      queryClient.setQueryData(["users"], context.previousUsers);
+    },
+
+    // Final Sync
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      });
     },
   });
 
