@@ -1,7 +1,8 @@
 import { api } from "./apiClient";
 
 export async function getPosts(signal) {
-  return api.get("/posts", {
+  const response = await api.get("/posts", {
     signal,
   });
+  return response.posts || [];
 }

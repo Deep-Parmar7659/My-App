@@ -1,47 +1,39 @@
 import { useEffect, useState } from "react";
-import useDebounce from "./useDebounce";
 import { searchUsers } from "../api/userService";
+import useDebounce from "./useDebounce";
 
-export default function useUserSearch(search) {
-  const debouncedSearch = useDebounce(search, 500);
-  const [results, setResults] = useState([]);
+export default function useUserSearch(searchTerm) {
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const debouncedSearch = useDebounce(searchTerm, 500);
 
   useEffect(() => {
     const controller = new AbortController();
-    // Empty Search
-    if (!debouncedSearch.trim()) {
-      Promise.resolve().then(() => setResults([]));
-      return;
-    }
-
     async function fetchUsers() {
+      if (!debouncedSearch.trim()) {
+        setUsers([]);
+        return;
+      }
       try {
         setLoading(true);
         setError(null);
-
-        const data = await searchUsers(debouncedSearch, controller.signal);
-        setResults(Array.isArray(data?.users) ? data.users : []);
-      } catch (err) {
-        if (err.name === "AbortError") {
-          console.log("Search Request Cancelled");
-          return;
-        }
-        setError(err.message);
+        const result = await searchUsers(debouncedSearch, controller.signal);
+        setUsers(result || []);
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        setError(error.message);
       } finally {
         setLoading(false);
       }
     }
-
     fetchUsers();
-    return () => {
-      controller.abort();
-    };
+
+    return () => controller.abort();
   }, [debouncedSearch]);
 
   return {
-    results,
+    users,
     loading,
     error,
   };

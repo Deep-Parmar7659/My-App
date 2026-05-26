@@ -32,8 +32,12 @@ export default function Users() {
 
   // Combine All Users
   const allUsers = useMemo(() => {
-    return [...addedUsers, ...users];
-  }, [addedUsers, users]);
+    const apiUsers = Array.isArray(users) ? users : [];
+
+    const manualUsers = Array.isArray(addedUsers) ? addedUsers : [];
+
+    return [...manualUsers, ...apiUsers];
+  }, [users, addedUsers]);
 
   // Search Hook
   const [search, setSearch] = useState("");
@@ -56,23 +60,14 @@ export default function Users() {
       if (sortOrder === "asc") {
         return a.name.localeCompare(b.name);
       }
-
       return b.name.localeCompare(a.name);
     });
-
     return [...manualUsers, ...sortedApiUsers];
   }, [filteredData, sortOrder]);
 
   // Pagination Hook
-  const {
-    currentPage,
-    totalPages,
-    currentData,
-    nextPage,
-    prevPage,
-    goToPage,
-    setCurrentPage,
-  } = usePagination(sortedData, 4);
+  const { currentPage, totalPages, currentData, nextPage, prevPage, goToPage } =
+    usePagination(sortedData, 4);
 
   // Error Toast
   useEffect(() => {
@@ -83,11 +78,10 @@ export default function Users() {
 
   // Add User
   const handleAddUser = (newUser) => {
-    setAddedUsers((prevUsers) => [newUser, ...prevUsers]);
-
-    // Move to first page instantly
-    setCurrentPage(1);
-
+    setAddedUsers((prevUsers) => {
+      const updatedUsers = [newUser, ...prevUsers];
+      return updatedUsers;
+    });
     toast.success("✅ User Added Successfully");
   };
 

@@ -1,9 +1,15 @@
 import { api } from "./apiClient";
 
 export async function getUsers(signal) {
-  return api.get("/users", { signal });
+  const response = await api.get("/users", {
+    signal,
+  });
+  return response.users || [];
 }
 
 export async function searchUsers(query, signal) {
-  return api.get(`/users/search?q=${query}`, { signal });
+  const response = await api.get(`/users/search?q=${query}`, {
+    signal,
+  });
+  return response.users || [];
 }
