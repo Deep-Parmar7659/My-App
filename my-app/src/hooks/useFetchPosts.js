@@ -1,15 +1,20 @@
-import useFetch from "./useFetch";
-
+import { useQuery } from "@tanstack/react-query";
 import { getPosts } from "../api/postService";
 
 export default function useFetchPosts() {
-  const { data, loading, error } = useFetch(getPosts);
-
-  const normalizedPosts = Array.isArray(data?.posts) ? data.posts : [];
+  const {
+    data = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["posts"],
+    queryFn: () => getPosts(),
+    staleTime: 1000 * 60 * 5,
+  });
 
   return {
-    posts: normalizedPosts,
-    loading,
-    error,
+    posts: data,
+    loading: isLoading,
+    error: error?.message || null,
   };
 }

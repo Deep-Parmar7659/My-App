@@ -1,53 +1,26 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "../api/userService";
 import { getPosts } from "../api/postService";
 
 export default function useDashboardStats() {
-  const [stats, setStats] = useState({
-    users: 0,
-    posts: 0,
+  const usersQuery = useQuery({
+    queryKey: ["users"],
+    queryFn: () => getUsers(),
+    staleTime: 1000 * 60 * 5,
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function fetchStats() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const [usersData, postsData] = await Promise.all([
-          getUsers(controller.signal),
-          getPosts(controller.signal),
-        ]);
-
-        setStats({
-          users: Array.isArray(usersData?.users) ? usersData.users.length : 0,
-          posts: Array.isArray(postsData?.posts) ? postsData.posts.length : 0,
-        });
-      } catch (err) {
-        if (err.name === "AbortError") {
-          return;
-        }
-
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchStats();
-
-    return () => {
-      controller.abort();
-    };
-  }, []);
+  const postsQuery = useQuery({
+    queryKey: ["posts"],
+    queryFn: () => getPosts(),
+    staleTime: 1000 * 60 * 5,
+  });
 
   return {
-    stats,
-    loading,
-    error,
+    stats: {
+      users: usersQuery.data?.length || 0,
+      posts: postsQuery.data?.length || 0,
+    },
+    loading: usersQuery.isLoading || postsQuery.isLoading,
+    error: usersQuery.error?.message || postsQuery.error?.message || null,
   };
 }
