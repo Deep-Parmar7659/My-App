@@ -1,6 +1,7 @@
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import useInfinitePosts from "../hooks/useInfinitePosts";
 import LoadMoreTrigger from "../components/LoadMoreTrigger";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function Posts() {
   const {
@@ -49,13 +50,7 @@ export default function Posts() {
   }
 
   // Error State
-  if (error) {
-    return (
-      <h1 className="text-2xl text-red-500 text-center mt-10">
-        {error.message}
-      </h1>
-    );
-  }
+  <ErrorMessage error={error} />;
 
   return (
     <div>
