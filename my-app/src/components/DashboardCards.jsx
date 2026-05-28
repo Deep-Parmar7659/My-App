@@ -1,4 +1,5 @@
 import DashboardCard from "./DashboardCard";
+import useDashboardStats from "../hooks/dashboard/useDashboardStats";
 import { FaUsers, FaFileAlt, FaChartLine } from "react-icons/fa";
 
 export default function DashboardCards() {

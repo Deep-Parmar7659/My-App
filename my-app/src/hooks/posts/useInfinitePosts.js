@@ -3,29 +3,34 @@ import { getPosts } from "../../api/postService";
 
 export default function useInfinitePosts() {
   return useInfiniteQuery({
-    queryKey: ["posts"],
-    queryFn: ({ pageParam = 0, signal }) => getPosts(pageParam, signal),
+    queryKey: ["infinite-posts"],
     initialPageParam: 0,
 
-    getNextPageParam: (lastPage, allPages) => {
-      // Safety
-      if (!lastPage || !allPages) {
+    queryFn: async ({ pageParam = 0, signal }) => {
+      const response = await getPosts(pageParam, signal);
+
+      // Safe fallback
+      return {
+        posts: response?.posts || [],
+        total: response?.total || 0,
+        skip: response?.skip || 0,
+        limit: response?.limit || 10,
+      };
+    },
+
+    getNextPageParam: (lastPage, allPages = []) => {
+      // Safety checks
+      if (!lastPage || !Array.isArray(lastPage.posts)) {
         return undefined;
       }
-
-      // Ensure posts exists
-      if (!Array.isArray(lastPage.posts)) {
-        return undefined;
-      }
-
       const nextSkip = allPages.length * 10;
-
-      // Stop pagination
       if (nextSkip >= lastPage.total) {
         return undefined;
       }
-
       return nextSkip;
     },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 10,
+    retry: 1,
   });
 }

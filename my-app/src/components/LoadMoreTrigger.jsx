@@ -9,9 +9,7 @@ export default function LoadMoreTrigger({
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-
+      ([entry]) => {
         if (entry.isIntersecting && hasNextPage && !isFetching) {
           onLoadMore();
         }
@@ -21,14 +19,15 @@ export default function LoadMoreTrigger({
       },
     );
 
-    if (triggerRef.current) {
-      observer.observe(triggerRef.current);
+    const currentRef = triggerRef.current;
+
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (triggerRef.current) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        observer.unobserve(triggerRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, [hasNextPage, isFetching, onLoadMore]);

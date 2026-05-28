@@ -1,4 +1,5 @@
-import useDocumentTitle from "../hooks/ui/useDocumentTitle";import useInfinitePosts from "../hooks/posts/useInfinitePosts";
+import useDocumentTitle from "../hooks/ui/useDocumentTitle";
+import useInfinitePosts from "../hooks/posts/useInfinitePosts";
 import LoadMoreTrigger from "../components/LoadMoreTrigger";
 import ErrorMessage from "../components/ErrorMessage";
 
@@ -12,7 +13,9 @@ export default function Posts() {
     isFetchingNextPage,
   } = useInfinitePosts();
 
-  const posts = data?.pages.flatMap((page) => page.posts) || [];
+  const pages = Array.isArray(data?.pages) ? data.pages : [];
+
+  const posts = pages.flatMap((page) => page?.posts || []);
 
   useDocumentTitle("Posts");
 
@@ -49,7 +52,9 @@ export default function Posts() {
   }
 
   // Error State
-  <ErrorMessage error={error} />;
+  if (error) {
+    return <ErrorMessage error={error} />;
+  }
 
   return (
     <div>
@@ -63,7 +68,7 @@ export default function Posts() {
 
       {/* Posts Grid */}
       <div className="grid gap-6">
-        {posts.map((post) => (
+        {posts?.map((post) => (
           <div
             key={post.id}
             className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg transition"
@@ -89,7 +94,7 @@ export default function Posts() {
       {/* Auto Infinite Scroll */}
       <LoadMoreTrigger
         onLoadMore={fetchNextPage}
-        hasNextPage={hasNextPage}
+        hasNextPage={Boolean(hasNextPage)}
         isFetching={isFetchingNextPage}
       />
 
