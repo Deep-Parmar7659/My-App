@@ -6,5 +6,6 @@ export async function getPosts(pageParam = 0, signal) {
     signal,
   });
 
+  // MUST return full response
   return response;
 }
