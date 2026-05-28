@@ -1,7 +1,11 @@
 import useDocumentTitle from "../hooks/ui/useDocumentTitle";
 import useInfinitePosts from "../hooks/posts/useInfinitePosts";
+
 import LoadMoreTrigger from "../components/LoadMoreTrigger";
 import ErrorMessage from "../components/ErrorMessage";
+
+import PostSkeleton from "../components/ui/PostSkeleton";
+import EmptyState from "../components/ui/EmptyState";
 
 export default function Posts() {
   const {
@@ -19,32 +23,21 @@ export default function Posts() {
 
   useDocumentTitle("Posts");
 
-  // Loading State — skeleton cards matching post card layout
+  // Loading State
   if (isLoading) {
     return (
       <div>
         {/* Heading Skeleton */}
         <div className="mb-8">
           <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-32 mb-3 animate-pulse" />
+
           <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-56 animate-pulse" />
         </div>
 
-        {/* Post Card Skeletons */}
+        {/* Reusable Skeletons */}
         <div className="grid gap-6">
           {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow animate-pulse"
-            >
-              {/* Title line */}
-              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-4" />
-              {/* Body lines */}
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2" />
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2" />
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-5" />
-              {/* Button */}
-              <div className="h-9 bg-gray-200 dark:bg-gray-700 rounded w-28" />
-            </div>
+            <PostSkeleton key={i} />
           ))}
         </div>
       </div>
@@ -56,6 +49,16 @@ export default function Posts() {
     return <ErrorMessage error={error} />;
   }
 
+  // Empty State
+  if (!posts.length) {
+    return (
+      <EmptyState
+        title="No Posts Available"
+        description="Posts will appear here once data is available."
+      />
+    );
+  }
+
   return (
     <div>
       {/* Heading */}
@@ -63,15 +66,16 @@ export default function Posts() {
         <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
           Posts
         </h1>
+
         <p className="text-gray-500 mt-2">Explore latest published posts.</p>
       </div>
 
       {/* Posts Grid */}
       <div className="grid gap-6">
-        {posts?.map((post) => (
+        {posts.map((post) => (
           <div
             key={post.id}
-            className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg transition"
+            className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
           >
             {/* Title */}
             <h2 className="text-2xl font-semibold text-purple-600 capitalize">
@@ -91,16 +95,18 @@ export default function Posts() {
         ))}
       </div>
 
-      {/* Auto Infinite Scroll */}
+      {/* Infinite Scroll Trigger */}
       <LoadMoreTrigger
         onLoadMore={fetchNextPage}
         hasNextPage={Boolean(hasNextPage)}
         isFetching={isFetchingNextPage}
       />
 
-      {/* Loading State */}
+      {/* Loading More State */}
       {isFetchingNextPage && (
-        <p className="text-center mt-6 text-gray-500">Loading more posts...</p>
+        <div className="flex justify-center py-6">
+          <div className="h-10 w-10 rounded-full border-4 border-purple-500 border-t-transparent animate-spin" />
+        </div>
       )}
 
       {/* End Message */}
