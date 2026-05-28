@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../api/userService";
-import { getPosts } from "../api/postService";
+import { getUsers } from "../../api/userService";
+import { getPosts } from "../../api/postService";
 
 export default function useDashboardStats() {
   const usersQuery = useQuery({

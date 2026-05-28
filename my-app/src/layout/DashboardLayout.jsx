@@ -3,8 +3,8 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 
-import useKeyPress from "../hooks/useKeyPress";
-import useToggle from "../hooks/useToggle";
+import useKeyPress from "../hooks/ui/useKeyPress";
+import useToggle from "../hooks/ui/useToggle";
 
 export default function DashboardLayout() {
   const {

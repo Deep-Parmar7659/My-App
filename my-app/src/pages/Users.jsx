@@ -1,20 +1,20 @@
 import { useState, useMemo, useEffect } from "react";
 import toast from "react-hot-toast";
 
-import useFetchUsers from "../hooks/useFetchUsers";
-import usePagination from "../hooks/usePagination";
-import useLocalStorage from "../hooks/useLocalStorage";
-import useSearch from "../hooks/useSearch";
-import useSort from "../hooks/useSort";
-import useModal from "../hooks/useModal";
-import useDocumentTitle from "../hooks/useDocumentTitle";
-import usePrevious from "../hooks/usePrevious";
+import useFetchUsers from "../hooks/users/useFetchUsers";
+import usePagination from "../hooks/forms/usePagination";
+import useLocalStorage from "../hooks/shared/useLocalStorage";
+import useSearch from "../hooks/forms/useSearch";
+import useSort from "../hooks/forms/useSort";
+import useModal from "../hooks/ui/useModal";
+import useDocumentTitle from "../hooks/ui/useDocumentTitle";
+import usePrevious from "../hooks/ui/usePrevious";
 
 import AddUserModal from "../components/AddUserModal";
 import UserTable from "../components/UserTable";
 import Pagination from "../components/Pagination";
-import useDebounce from "../hooks/useDebounce";
-import useUserMutations from "../hooks/useUserMutations";
+import useDebounce from "../hooks/shared/useDebounce";
+import useUserMutations from "../hooks/users/useUserMutations";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();

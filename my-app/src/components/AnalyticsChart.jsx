@@ -7,7 +7,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-import useDashboardStats from "../hooks/useDashboardStats";
+import useDashboardStats from "../hooks/dashboard/useDashboardStats";
 
 export default function AnalyticsChart() {
   const { stats, loading, error } = useDashboardStats();

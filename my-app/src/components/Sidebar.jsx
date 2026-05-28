@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useRef } from "react";
 
-import useOutsideClick from "../hooks/useOutsideClick";
+import useOutsideClick from "../hooks/ui/useOutsideClick";
 
 import {
   FaHome,

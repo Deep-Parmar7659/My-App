@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { searchUsers } from "../api/userService";
-import useDebounce from "./useDebounce";
+import { searchUsers } from "../../api/userService";
+import useDebounce from "../shared/useDebounce";
 
 export default function useUserSearch(searchTerm) {
   const [users, setUsers] = useState([]);

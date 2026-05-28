@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPosts } from "../api/postService";
+import { getPosts } from "../../api/postService";
 
 export default function useFetchPosts() {
   const {

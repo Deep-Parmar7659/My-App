@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useUserSearch from "../hooks/useUserSearch";
+import useUserSearch from "../hooks/users/useUserSearch";
 
 export default function UserSearch() {
   const [search, setSearch] = useState("");

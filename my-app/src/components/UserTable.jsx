@@ -1,4 +1,4 @@
-import useCopyToClipboard from "../hooks/useCopyToClipboard";
+import useCopyToClipboard from "../hooks/ui/useCopyToClipboard";
 
 export default function UserTable({ users, onEdit, onDelete, loading }) {
   const { copy, isCopied } = useCopyToClipboard();

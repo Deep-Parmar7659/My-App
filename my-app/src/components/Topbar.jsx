@@ -1,7 +1,7 @@
-import useThemeContext from "../hooks/useThemeContext";
-import useWindowSize from "../hooks/useWindowSize";
-import useOnlineStatus from "../hooks/useOnlineStatus";
-import useAuth from "../hooks/useAuth";
+import useThemeContext from "../hooks/auth/useThemeContext";
+import useWindowSize from "../hooks/ui/useWindowSize";
+import useOnlineStatus from "../hooks/ui/useOnlineStatus";
+import useAuth from "../hooks/auth/useAuth";
 import { useNavigate } from "react-router-dom";
 
 export default function Topbar({ toggleSidebar }) {

@@ -1,4 +1,4 @@
-import useMutation from "./useMutation";
+import useMutation from "../useMutation";
 
 import { updateUser } from "../services/api";
 

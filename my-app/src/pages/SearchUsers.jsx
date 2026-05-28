@@ -1,4 +1,4 @@
-import useUserSearch from "../hooks/useUserSearch";
+import useUserSearch from "../hooks/users/useUserSearch";
 
 export default function SearchUsers() {
   const { search, setSearch, users, loading, error } = useUserSearch();

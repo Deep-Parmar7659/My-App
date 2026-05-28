@@ -1,4 +1,4 @@
-import useMutation from "./useMutation";
+import useMutation from "../useMutation";
 
 import { deleteUser } from "../services/api";
 

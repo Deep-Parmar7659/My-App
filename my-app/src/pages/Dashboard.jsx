@@ -1,4 +1,4 @@
-import useDocumentTitle from "../hooks/useDocumentTitle";
+import useDocumentTitle from "../hooks/ui/useDocumentTitle";
 import DashboardCards from "../components/DashboardCards";
 import DashboardCharts from "../components/DashboardCharts";
 

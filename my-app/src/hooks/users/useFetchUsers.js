@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../api/userService";
+import { getUsers } from "../../api/userService";
 
 export default function useFetchUsers() {
   const {

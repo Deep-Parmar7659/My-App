@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useDebounce from "./useDebounce";
+import useDebounce from "../shared/useDebounce";
 
 export default function useSearchAsync(searchFunction, delay = 1000) {
   const [search, setSearch] = useState("");

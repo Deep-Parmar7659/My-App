@@ -1,4 +1,4 @@
-import useCounter from "../hooks/useCounter";
+import useCounter from "../hooks/ui/useCounter";
 
 export default function CounterDemo() {
   const { count, increment, decrement, reset } = useCounter(0);

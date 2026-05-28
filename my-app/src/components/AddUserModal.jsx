@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 
-import useForm from "../hooks/useForm";
+import useForm from "../hooks/forms/useForm";
 
 const emptyForm = {
   name: "",

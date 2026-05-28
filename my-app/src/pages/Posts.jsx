@@ -1,5 +1,4 @@
-import useDocumentTitle from "../hooks/useDocumentTitle";
-import useInfinitePosts from "../hooks/useInfinitePosts";
+import useDocumentTitle from "../hooks/ui/useDocumentTitle";import useInfinitePosts from "../hooks/posts/useInfinitePosts";
 import LoadMoreTrigger from "../components/LoadMoreTrigger";
 import ErrorMessage from "../components/ErrorMessage";
 
