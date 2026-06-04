@@ -3,18 +3,19 @@ import { getUsers } from "../../api/userService";
 
 export default function useFetchUsers() {
   const {
-    data = [],
+    data,
     isLoading,
     error,
   } = useQuery({
     queryKey: ["users"],
-    queryFn: () => getUsers(),
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    queryFn: ({ signal }) => getUsers({ signal }),
+    staleTime: 1000 * 60 * 5,
   });
 
-  const normalizedUsers = data.map((user) => ({
+  const usersArray = Array.isArray(data?.users) ? data.users : [];
+  const normalizedUsers = usersArray.map((user) => ({
     id: user.id,
-    name: user.name || `${user.firstName ?? ""} ${user.lastName ?? ""}`,
+    name: user.name || `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim(),
     email: user.email,
     age: user.age,
     company:

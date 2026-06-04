@@ -59,7 +59,6 @@ export default function AddUserModal({
         email: values.email,
         company: { name: values.company },
       });
-      toast.success("✏️ User Updated Successfully");
     }
 
     // Add User

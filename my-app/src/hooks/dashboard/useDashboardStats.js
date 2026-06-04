@@ -5,23 +5,18 @@ import { getPosts } from "../../api/postService";
 export default function useDashboardStats() {
   const usersQuery = useQuery({
     queryKey: ["dashboard-users"],
-    queryFn: () => getUsers(),
-    staleTime: 1000 * 60 * 5,
+    queryFn: ({ signal }) => getUsers({ signal }),
   });
 
   const postsQuery = useQuery({
     queryKey: ["dashboard-posts"],
-    queryFn: () => getPosts(),
-    staleTime: 1000 * 60 * 5,
+    queryFn: ({ signal }) => getPosts(0, signal),
   });
-
-  console.log("USERS DATA:", usersQuery.data);
 
   return {
     stats: {
-      users: usersQuery.data?.total || 0,
-
-      posts: postsQuery.data?.total || 0,
+      users: usersQuery.data?.users?.length || 0,
+      posts: postsQuery.data?.posts?.length || 0,
     },
 
     loading: usersQuery.isLoading || postsQuery.isLoading,

@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addUser, updateUser, deleteUser } from "../../api/userService";
+import toast from "react-hot-toast";
 
 export default function useUserMutations() {
   const queryClient = useQueryClient();
@@ -8,36 +9,25 @@ export default function useUserMutations() {
   const addUserMutation = useMutation({
     mutationFn: addUser,
 
-    // Optimistic Add
     onMutate: async (newUser) => {
-      // Stop ongoing queries
-      await queryClient.cancelQueries({
-        queryKey: ["users"],
+      await queryClient.cancelQueries({ queryKey: ["users"] });
+      const previousData = queryClient.getQueryData(["users"]);
+
+      queryClient.setQueryData(["users"], (old) => {
+        const users = old?.users || [];
+        return { ...old, users: [newUser, ...users] };
       });
 
-      // Snapshot previous users
-      const previousUsers = queryClient.getQueryData(["users"]);
-
-      // Add instantly
-      queryClient.setQueryData(["users"], (oldUsers = []) => [
-        newUser,
-        ...oldUsers,
-      ]);
-
-      // Return snapshot
-      return { previousUsers };
+      return { previousData };
     },
 
-    // Rollback if failed
-    onError: (error, newUser, context) => {
-      queryClient.setQueryData(["users"], context.previousUsers);
+    onError: (_error, _newUser, context) => {
+      queryClient.setQueryData(["users"], context.previousData);
+      toast.error("Failed to add user");
     },
 
-    // Final Sync
     onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["users"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
 
@@ -45,42 +35,30 @@ export default function useUserMutations() {
   const updateUserMutation = useMutation({
     mutationFn: ({ id, userData }) => updateUser(id, userData),
 
-    // Optimistic Update
     onMutate: async ({ id, userData }) => {
-      // Stop active requests
-      await queryClient.cancelQueries({
-        queryKey: ["users"],
+      await queryClient.cancelQueries({ queryKey: ["users"] });
+      const previousData = queryClient.getQueryData(["users"]);
+
+      queryClient.setQueryData(["users"], (old) => {
+        const users = old?.users || [];
+        return {
+          ...old,
+          users: users.map((user) =>
+            user.id === id ? { ...user, ...userData } : user
+          ),
+        };
       });
 
-      // Snapshot old users
-      const previousUsers = queryClient.getQueryData(["users"]);
-
-      // Instantly update cache
-      queryClient.setQueryData(["users"], (oldUsers = []) =>
-        oldUsers.map((user) =>
-          user.id === id
-            ? {
-                ...user,
-                ...userData,
-              }
-            : user,
-        ),
-      );
-
-      // Return snapshot
-      return { previousUsers };
+      return { previousData };
     },
 
-    // Rollback if failed
-    onError: (error, variables, context) => {
-      queryClient.setQueryData(["users"], context.previousUsers);
+    onError: (_error, _variables, context) => {
+      queryClient.setQueryData(["users"], context.previousData);
+      toast.error("Failed to update user");
     },
 
-    // Final sync
     onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["users"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
 
@@ -88,35 +66,28 @@ export default function useUserMutations() {
   const deleteUserMutation = useMutation({
     mutationFn: deleteUser,
 
-    // Before API Request
     onMutate: async (deletedUserId) => {
-      // Stop ongoing queries
-      await queryClient.cancelQueries({
-        queryKey: ["users"],
+      await queryClient.cancelQueries({ queryKey: ["users"] });
+      const previousData = queryClient.getQueryData(["users"]);
+
+      queryClient.setQueryData(["users"], (old) => {
+        const users = old?.users || [];
+        return {
+          ...old,
+          users: users.filter((user) => user.id !== deletedUserId),
+        };
       });
 
-      // Snapshot previous users
-      const previousUsers = queryClient.getQueryData(["users"]);
-
-      // Instantly remove user
-      queryClient.setQueryData(["users"], (oldUsers = []) =>
-        oldUsers.filter((user) => user.id !== deletedUserId),
-      );
-
-      // Return snapshot for rollback
-      return { previousUsers };
+      return { previousData };
     },
 
-    // Rollback if API fails
-    onError: (error, deletedUserId, context) => {
-      queryClient.setQueryData(["users"], context.previousUsers);
+    onError: (_error, _deletedUserId, context) => {
+      queryClient.setQueryData(["users"], context.previousData);
+      toast.error("Failed to delete user");
     },
 
-    // Final Sync
     onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["users"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
 

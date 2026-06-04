@@ -1,7 +1,9 @@
+import { useState } from "react";
 import useUserSearch from "../hooks/users/useUserSearch";
 
 export default function SearchUsers() {
-  const { search, setSearch, users, loading, error } = useUserSearch();
+  const [search, setSearch] = useState("");
+  const { users, loading, error } = useUserSearch(search);
 
   return (
     <div className="p-5">
@@ -20,7 +22,7 @@ export default function SearchUsers() {
       {error && <p className="mt-4 text-red-500">{error}</p>}
 
       <div className="mt-4 space-y-2">
-        {users.map((user) => (
+        {users?.users?.map((user) => (
           <div key={user.id} className="border p-3 rounded">
             {user.firstName} {user.lastName}
           </div>

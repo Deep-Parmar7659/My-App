@@ -1,6 +1,6 @@
 import { api } from "./apiClient";
 
-export async function getUsers(signal) {
+export async function getUsers({ signal }) {
   const response = await api.get("/users", {
     signal,
   });

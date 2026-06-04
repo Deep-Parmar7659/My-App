@@ -87,7 +87,7 @@ export default function Users() {
       // Update React Query cache
       await addUserMutation.mutateAsync(newUser);
     } catch (error) {
-      console.log(error);
+      toast.error(error?.message || "Failed to add user");
     }
   };
 
@@ -112,7 +112,7 @@ export default function Users() {
       await deleteUserMutation.mutateAsync(id);
       toast.success("🗑️ User Deleted Successfully");
     } catch (error) {
-      console.log(error);
+      toast.error(error?.message || "Failed to delete user");
     }
   };
 
@@ -138,7 +138,7 @@ export default function Users() {
       toast.success("✏️ User Updated Successfully");
       closeModal();
     } catch (error) {
-      console.log(error);
+      toast.error(error?.message || "Failed to update user");
     }
   };
 
