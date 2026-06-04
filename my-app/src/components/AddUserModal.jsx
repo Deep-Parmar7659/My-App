@@ -64,7 +64,8 @@ export default function AddUserModal({
     // Add User
     else {
       const newUser = {
-        id: Date.now(),
+        id: crypto.randomUUID(),
+        source: "manual",
         name: values.name,
         email: values.email,
         company: { name: values.company },

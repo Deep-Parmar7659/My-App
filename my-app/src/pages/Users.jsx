@@ -53,10 +53,10 @@ export default function Users() {
 
   const sortedData = useMemo(() => {
     // Manual users stay on top
-    const manualUsers = filteredData.filter((user) => user.id > 1000000000);
+    const manualUsers = filteredData.filter((user) => user.source === "manual");
 
     // API users
-    const apiUsers = filteredData.filter((user) => user.id <= 1000000000);
+    const apiUsers = filteredData.filter((user) => user.source !== "manual");
 
     // Sort only API users
     const sortedApiUsers = [...apiUsers].sort((a, b) => {
@@ -79,16 +79,9 @@ export default function Users() {
     }
   }, [error]);
 
-  // Add User
-  const handleAddUser = async (newUser) => {
-    try {
-      // Save in localStorage
-      setAddedUsers([newUser, ...addedUsers]);
-      // Update React Query cache
-      await addUserMutation.mutateAsync(newUser);
-    } catch (error) {
-      toast.error(error?.message || "Failed to add user");
-    }
+  // Add User — stored only in localStorage/local state (not pushed into RQ cache)
+  const handleAddUser = (newUser) => {
+    setAddedUsers((prev) => [newUser, ...prev]);
   };
 
   // Edit User (Open Modal)
@@ -101,7 +94,7 @@ export default function Users() {
   const handleDeleteUser = async (id) => {
     try {
       // Manual User
-      if (id > 1000000000) {
+      if (typeof id === "string" && id.includes("-")) {
         const updatedManualUsers = addedUsers.filter((user) => user.id !== id);
         setAddedUsers(updatedManualUsers);
         toast.success("🗑️ User Deleted Successfully");
@@ -120,7 +113,7 @@ export default function Users() {
   const handleUpdateUser = async (updatedUser) => {
     try {
       // Manual Users
-      if (updatedUser.id > 1000000000) {
+      if (updatedUser.source === "manual") {
         const updatedManualUsers = addedUsers.map((user) =>
           user.id === updatedUser.id ? updatedUser : user,
         );
