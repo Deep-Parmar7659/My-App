@@ -18,8 +18,7 @@ import useUserMutations from "../hooks/users/useUserMutations";
 
 export default function Users() {
   const { users, loading, error } = useFetchUsers();
-  const { addUserMutation, updateUserMutation, deleteUserMutation } =
-    useUserMutations();
+  const { updateUserMutation, deleteUserMutation } = useUserMutations();
 
   // Local Storage Users
   const [addedUsers, setAddedUsers] = useLocalStorage("addedUsers", []);
