@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import useDocumentTitle from "../hooks/ui/useDocumentTitle";
 import useInfinitePosts from "../hooks/posts/useInfinitePosts";
 
@@ -8,6 +9,9 @@ import PostSkeleton from "../components/ui/PostSkeleton";
 import EmptyState from "../components/ui/EmptyState";
 
 export default function Posts() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
+
   const {
     data,
     isLoading,
@@ -20,7 +24,25 @@ export default function Posts() {
   const pages = Array.isArray(data?.pages) ? data.pages : [];
 
   const posts = pages.flatMap((page) => page?.posts || []);
+  const filteredPosts = useMemo(() => {
+    let result = [...posts];
 
+    if (searchTerm.trim()) {
+      result = result.filter(
+        (post) =>
+          post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          post.body.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+    }
+
+    result.sort((a, b) =>
+      sortOrder === "asc"
+        ? a.title.localeCompare(b.title)
+        : b.title.localeCompare(a.title),
+    );
+
+    return result;
+  }, [posts, searchTerm, sortOrder]);
   useDocumentTitle("Posts");
 
   // Loading State
@@ -33,7 +55,6 @@ export default function Posts() {
 
           <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-56 animate-pulse" />
         </div>
-
         {/* Reusable Skeletons */}
         <div className="grid gap-6">
           {[...Array(6)].map((_, i) => (
@@ -50,11 +71,11 @@ export default function Posts() {
   }
 
   // Empty State
-  if (!posts.length) {
+  if (!filteredPosts.length) {
     return (
       <EmptyState
-        title="No Posts Available"
-        description="Posts will appear here once data is available."
+        title="No Matching Posts"
+        description="Try another search keyword."
       />
     );
   }
@@ -69,10 +90,29 @@ export default function Posts() {
 
         <p className="text-gray-500 mt-2">Explore latest published posts.</p>
       </div>
+      {/* Search & Sort */}
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <input
+          type="text"
+          placeholder="Search posts..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-1 px-4 py-2 rounded-lg border dark:bg-gray-800 dark:text-white"
+        />
+
+        <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+          className="px-4 py-2 rounded-lg border dark:bg-gray-800 dark:text-white"
+        >
+          <option value="asc">A → Z</option>
+          <option value="desc">Z → A</option>
+        </select>
+      </div>
 
       {/* Posts Grid */}
       <div className="grid gap-6">
-        {posts.map((post) => (
+        {filteredPosts.map((post) => (
           <div
             key={post.id}
             className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
