@@ -8,6 +8,8 @@ import ErrorMessage from "../components/ErrorMessage";
 import PostSkeleton from "../components/ui/PostSkeleton";
 import EmptyState from "../components/ui/EmptyState";
 
+import { Link } from "react-router-dom";
+
 export default function Posts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
@@ -128,9 +130,12 @@ export default function Posts() {
             </p>
 
             {/* Button */}
-            <button className="mt-5 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition">
+            <Link
+              to={`/posts/${post.id}`}
+              className="inline-block mt-5 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition"
+            >
               Read More
-            </button>
+            </Link>
           </div>
         ))}
       </div>

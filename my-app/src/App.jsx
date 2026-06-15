@@ -20,6 +20,8 @@ import SearchUsers from "./pages/SearchUsers";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UserSearch from "./pages/UserSearch";
 
+import PostDetails from "./pages/PostDetails";
+
 function App() {
   return (
     <BrowserRouter>
@@ -49,6 +51,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/users" element={<Users />} />
           <Route path="/posts" element={<Posts />} />
+          <Route path="/posts/:id" element={<PostDetails />} />
         </Route>
 
         {/* 404 */}
