@@ -1,6 +1,7 @@
 import { api } from "./apiClient";
 
-export async function getUsers({ signal }) {
+// Get Users
+export async function getUsers(signal) {
   const response = await api.get("/users", {
     signal,
   });
@@ -8,6 +9,7 @@ export async function getUsers({ signal }) {
   return response;
 }
 
+// Search Users
 export async function searchUsers(query, signal) {
   const response = await api.get(`/users/search?q=${query}`, {
     signal,
